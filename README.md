@@ -31,15 +31,15 @@ powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/
 ```
 
 
-## Install Neuralqa model
+## Install Descraper
 Copy-Paste the following comands 
 ```
+git clone https://github.com/franciscomvargas/descraper.git .
 %UserProfile%\miniconda3\condabin\activate 
 conda deactivate 
 conda create --prefix ./env python=3.11 -y
 conda activate ./env 
 conda install -y pip
-git clone https://github.com/franciscomvargas/descraper.git
 echo "yes" | pip install -r requirements.txt
 echo DONE (:
 
@@ -50,3 +50,5 @@ Copy-Paste the following comands
 ```
 python cli.py ui
 ```
+### Consideration
+This model require to run in paralel with neuralqa! Take a look at [my neuralqa instalation repo](https://github.com/franciscomvargas/neuralqa)
