@@ -2,6 +2,7 @@
 ## Create Project Folder 
 Model Folder:
 > %UserProfile%\Desota_Models\DeScraper
+
 Go to CMD (command prompt)
 > WIN + "R" 
 > Write "cmd" 
