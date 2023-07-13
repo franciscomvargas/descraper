@@ -51,4 +51,21 @@ Copy-Paste the following comands
 python cli.py ui
 ```
 ### Consideration
-This model require to run in paralel with neuralqa! Take a look at [my neuralqa instalation repo](https://github.com/franciscomvargas/neuralqa)
+This model require to run in paralel with neuralqa! 
+> Take a look at [my neuralqa instalation repo](https://github.com/franciscomvargas/neuralqa)
+
+# Credits / Lincense
+## Citation
+```
+@inproceedings{barbaresi-2021-trafilatura,
+  title = {{Trafilatura: A Web Scraping Library and Command-Line Tool for Text Discovery and Extraction}},
+  author = "Barbaresi, Adrien",
+  booktitle = "Proceedings of the Joint Conference of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing: System Demonstrations",
+  pages = "122--131",
+  publisher = "Association for Computational Linguistics",
+  url = "https://aclanthology.org/2021.acl-demo.15",
+  year = 2021,
+}
+```
+## Licence
+[GPL-3.0 license](https://github.com/adbar/trafilatura/blob/master/LICENSE)
