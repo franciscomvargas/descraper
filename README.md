@@ -54,7 +54,7 @@ python cli.py ui
 This model require to run in paralel with neuralqa! 
 > Take a look at [my neuralqa instalation repo](https://github.com/franciscomvargas/neuralqa)
 
-# Credits / Lincense
+# Credits / Lincense - Trafilatura
 ## Citation
 ```
 @inproceedings{barbaresi-2021-trafilatura,
