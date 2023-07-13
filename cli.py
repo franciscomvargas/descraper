@@ -1,7 +1,7 @@
 import click
 from server import launch_server
 from utils import cli_args
-
+import colorama
 
 @click.group()
 @click.version_option()
@@ -15,6 +15,7 @@ def cli():
 @cli_args.WORKERS
 def ui(host, port, workers):
     """This command launches the web interface for DeScraper."""
+    colorama.init()
     launch_server(host, port, workers)
 
 if __name__ == '__main__':
