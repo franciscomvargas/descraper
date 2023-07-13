@@ -1,0 +1,6 @@
+trafilatura
+pandas[excel]
+httpx
+requests
+fastapi
+uvicorn
