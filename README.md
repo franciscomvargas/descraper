@@ -11,6 +11,7 @@ Copy-Paste the following comands
 ```
 mkdir %UserProfile%\Desota_Models\DeScraper
 cd %UserProfile%\Desota_Models\DeScraper
+
 ```
 
 ## Test if conda is instaled
@@ -28,6 +29,7 @@ then is required conda instalation !
 Copy-Paste the following comand
 ```
 powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -OutFile ~\miniconda.exe && start /B /WAIT %UserProfile%\miniconda.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\miniconda3 && del %UserProfile%\miniconda.exe 
+
 ```
 
 
@@ -46,13 +48,27 @@ echo DONE (:
 ```
 
 ## Run Model
-Copy-Paste the following comands 
+### Start API server
+> Re-Open the command prompt (CMD)
+
+Copy-Paste the following comands
 ```
+cd %UserProfile%\Desota_Models\DeScraper
+%UserProfile%\miniconda3\condabin\activate 
+conda deactivate 
+conda activate ./env 
 python cli.py ui
+
+```
+### Open Server in Browser
+Search in the browser
+```
+http://127.0.0.1:8000/
 ```
 ### Consideration
 This model require to run in paralel with neuralqa! 
 > Take a look at [my neuralqa instalation repo](https://github.com/franciscomvargas/neuralqa)
+
 
 # Credits / Lincense - Trafilatura
 ## Citation
@@ -69,3 +85,4 @@ This model require to run in paralel with neuralqa!
 ```
 ## Licence
 [GPL-3.0 license](https://github.com/adbar/trafilatura/blob/master/LICENSE)
+
