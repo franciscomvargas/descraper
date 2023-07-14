@@ -63,7 +63,7 @@ python cli.py ui
 ### Open Server in Browser
 Search in the browser
 ```
-http://127.0.0.1:8000/
+http://127.0.0.1:8880/
 ```
 ### Consideration
 This model require to run in paralel with neuralqa! 
