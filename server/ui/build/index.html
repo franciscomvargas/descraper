@@ -1,44 +1,115 @@
 <!doctype html>
 <html lang="en">
     <head>
+        <link rel="icon" href="favicon.ico"/>
+        <link rel="apple-touch-icon" href="favicon.ico" />
         <title>DeScraper: AI assisted WebScraper</title>
         <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
-        <form action="/api/scraper" id="searchForm">
-            <label for="iurl" id="lurl" value="URL">URL &nbsp;&nbsp;&nbsp;&nbsp;( str )&nbsp;</label>
-            <input type="text" name="url" id="iurl" placeholder="Website Link" size="150">
-            <input type="checkbox" name="urlSample"  id="iurlSample">
-            <label for="iurlSample">Try URL Sample </label> <br>
 
-            <label for="iquery" id="lquery" value="Query">Query ( str[] ) </label>
-            <input type="text" name="query" id="iquery" placeholder="Data of interest" size="150">
-            <input type="checkbox" name="querySample" id="iquerySample">
-            <label for="iquerySample">Try Query Sample </label> <br><br>
+        <header id="header" class="header header--fixed hide-from-print" role="banner">
+            <div class="container" >
             
-            <input type="checkbox" name="htmltext" id="ihtmltext" value=0>
-            <label for="ihtmltext" id="lhtmltext" value="Retrieve HTML2Text">Retrieve HTML2Text &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Trafilatura Result) </label><br>
+                <nav id="nav" class="nav-wrapper" role="navigation">
+                    <ul class="nav nav--main">
+                        <li class="nav__item ">
+                            <a class="header__link subdued" href="https://github.com/franciscomvargas/descraper">
+                                <span aria-hidden="true" class="icon icon--github"></span>
+                                <span class="complimentary push--left">GitHub</span>
+                            </a>
+                        </li>
+                        <li class="nav__item ">
+                            <a class="header__link subdued" href="http://localhost:8880/api/commingsoon">
+                                <span aria-hidden="true" class="icon icon--twitter"></span>
+                                <span class="complimentary push--left">DeSOTA</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <a href="http://localhost:8880/" class="brand header__link">
+                    <b class="brand__forename">DeScraper</b><b class="brand__surname">.py</b>
+                </a>
+            </div>
+        </header>
+        
+        <article>
+        <header class="feature">
+            <div class="container container--wide feature-title">
+                <h3 class="feature-title__title headroom-title">
+                    WebScrape with Assistance of AI Models<br>(<a href="https://github.com/adbar/trafilatura/">Trafilatura</a> & <a href="https://github.com/victordibia/neuralqa/">NeuralQA</a>)
+                </h3>
+            </div>
+        </header>
+        <img src="favicon.ico" alt="logo" width="80" height="auto" style="position: absolute; top: 80px;">
+        <div class="container block main" role="main">
+
+            <form action="/api/scraper" id="searchForm">
+                <div class="downloads">
+                    <h2><label for="iurl" id="lurl" value="URL">URL ( str )</label></h2>
+                    <input type="text" name="url" id="iurl" placeholder="Website Link" size="67em">
+                    <input type="checkbox" name="urlSample"  id="iurlSample">
+                    <label for="iurlSample" style="text-align:right">Try URL Sample </label> <br>
+                </div>
+
+                <div class="downloads">
+                    <h2><label for="iquery" id="lquery" value="Query">Query ( str[] )</label></h2>
+                    <input type="text" name="query" id="iquery" placeholder="Data of interest" size="67em">
+                    <input type="checkbox" name="querySample" id="iquerySample">
+                    <label for="iquerySample">Try Query Sample </label> <br>
+                </div>
+                
+                <input type="checkbox" name="htmltext" id="ihtmltext" value=0>
+                <label for="ihtmltext" id="lhtmltext" value="Retrieve HTML2Text"><b>Retrieve HTML2Text</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Trafilatura Result) </label><br>
+                
+                <input type="checkbox" name="qa" id="iqa" value=0>
+                <label for="iqa" id="lqa" value="Retrieve Querys Answers"><b>Retrieve Querys Answers</b>&nbsp;(Run NeuralQA) </label><br>
+
+                <input type="checkbox" name="explanation" id="iexplanation" value=0>
+                <label for="iexplanation" id="lexplanation" value="NeuralQA Explanation"><b>NeuralQA Explanation</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Comming Soon) </label><br>
+
+                <input type="checkbox" name="html" id="ihtml" value=0>
+                <label for="ihtml" id="lhtml" value="Retrieve HTML font page"><b>Retrieve HTML font page</b> </label><br>
+
+                <input type="checkbox" name="excel" id="iexcel" value=0>
+                <label for="iexcel" id="lexcel" value="Generate Excel with webpage tables"><b>Generate Excel with webpage tables</b> </label><br>
+
+                <input type="checkbox" name="csv" id="icsv" value=0>
+                <label for="icsv" id="lcsv" value="Generate CSV with webpage tables"><b>Generate CSV with webpage tables</b> </label><br><br>
+
+                <div class="sharing">
+                    <div class="grid">
+                        <div class="grid__item one-half" >
+                            <input type="submit" value="Initiate DeScraper" class="sharing__button btn btn--secondary btn--full">
+                        </div>
+                        <div class="grid__item one-half" style="width: 32%; float:right;">
+                            <button id="icopy" class="btn--primary" style="border-radius:.25em; 
+                                border:0.5px solid rgba(41,47,54,0.2);
+                                -webkit-transition:background-color .2s linear; 
+                                -moz-transition:background-color .2s linear;
+                                -o-transition:background-color .2s linear;
+                                transition:background-color .2s linear" 
+                                hidden>
+                                    <img src="copy.svg" alt="copy" heigh="auto" width="17%">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- the result of the search will be rendered inside this div -->
+            <pre class="language-javascript"><code id="result">
+            </code></pre>
             
-            <input type="checkbox" name="qa" id="iqa" value=0>
-            <label for="iqa" id="lqa" value="Retrieve Querys Answers">Retrieve Querys Answers &nbsp;&nbsp;(Run NeuralQA) </label><br>
-
-            <input type="checkbox" name="explanation" id="iexplanation" value=0>
-            <label for="iexplanation" id="lexplanation" value="NeuralQA Explanation">NeuralQA Explanation &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Comming Soon) </label><br>
-
-            <input type="checkbox" name="html" id="ihtml" value=0>
-            <label for="ihtml" id="lhtml" value="Retrieve HTML font page">Retrieve HTML font page </label><br>
-
-            <input type="checkbox" name="excel" id="iexcel" value=0>
-            <label for="iexcel" id="lexcel" value="Generate Excel with page tables">Generate Excel with page tables </label><br>
-
-            <input type="checkbox" name="csv" id="icsv" value=0>
-            <label for="icsv" id="lcsv" value="Generate CSV with page tables">Generate CSV with page tables </label><br>
-
-            <br><input type="submit" value="Initiate DeScraper">
-        </form>
-        <!-- the result of the search will be rendered inside this div -->
-        <div id="result"></div>
+        </div>
+        <div class="footer">
+            <p>© 2023 - DeSOTA</p>
+        </div>
+        
+        <script  src="script.js"></script>
 
         <script>
             // Edit HTML page when Sample URL Button Clicked
@@ -66,7 +137,7 @@
             var memQuery = ""
             // Attach a submit handler to the form
             $( "#iquerySample" ).click(function() {
-                var $querySample = '[ "When The Simpsons debut?" , "What are the main characters of The Simpsons?" ]';
+                var $querySample = '[ "When The Simpsons debut?" , "What characters are in The Simpsons?" ]';
                 if( $( "#iquerySample" ).is(':checked') ){
                     var $currQuery = $( "#iquery" ).val()
                     if ($currQuery != $querySample && $currQuery != ""){
@@ -118,6 +189,16 @@
                     $('#iqa').prop('checked', true);
                 }
             });
+            
+            //Copy to Clipboard DeScraper Result
+            $( "#icopy" ).click(function(){
+                var $res_content = $( "#result" ).text();
+                var $tempTextarea = $('<textarea>');
+                $('body').append($tempTextarea);
+                $tempTextarea.val($res_content).select();
+                document.execCommand('copy');
+                $tempTextarea.remove();
+            });
 
             // Send the data using post
             // Attach a submit handler to the form
@@ -129,7 +210,7 @@
                 var $form = $( this ),
                 action = $form.attr( "action" ),
                 url = $form.find( "#iurl" ).val();
-                query = jQuery.makeArray($form.find( "#iquery" ).val());
+                query = JSON.parse($form.find( "#iquery" ).val());
                 html_text = $form.find( "#ihtmltext" ).is(':checked');
                 qa = $form.find( "#iqa" ).is(':checked');
                 explanation = $form.find( "#iexplanation" ).is(':checked');
@@ -157,7 +238,8 @@
                     traditional: true,
                     dataType: "json",
                     success: function( response ) {
-                        $( "#result" ).empty().append( JSON.stringify(response, null, 4) );
+                        $( "#result" ).empty().append( JSON.stringify(response, null, 2) );
+                        $( "#icopy").removeAttr("hidden");
                     }
                 });
             });
