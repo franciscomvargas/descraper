@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>DeScraper: AI assisted WebScraper</title>
+        <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <form action="/api/scraper" id="searchForm">
+            <label for="iurl" id="lurl" value="URL">URL &nbsp;&nbsp;&nbsp;&nbsp;( str )&nbsp;</label>
+            <input type="text" name="url" id="iurl" placeholder="Website Link" size="150">
+            <input type="checkbox" name="urlSample"  id="iurlSample">
+            <label for="iurlSample">Try URL Sample </label> <br>
+
+            <label for="iquery" id="lquery" value="Query">Query ( str[] ) </label>
+            <input type="text" name="query" id="iquery" placeholder="Data of interest" size="150">
+            <input type="checkbox" name="querySample" id="iquerySample">
+            <label for="iquerySample">Try Query Sample </label> <br><br>
+            
+            <input type="checkbox" name="htmltext" id="ihtmltext" value=0>
+            <label for="ihtmltext" id="lhtmltext" value="Retrieve HTML2Text">Retrieve HTML2Text &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Trafilatura Result) </label><br>
+            
+            <input type="checkbox" name="qa" id="iqa" value=0>
+            <label for="iqa" id="lqa" value="Retrieve Querys Answers">Retrieve Querys Answers &nbsp;&nbsp;(Run NeuralQA) </label><br>
+
+            <input type="checkbox" name="explanation" id="iexplanation" value=0>
+            <label for="iexplanation" id="lexplanation" value="NeuralQA Explanation">NeuralQA Explanation &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Comming Soon) </label><br>
+
+            <input type="checkbox" name="html" id="ihtml" value=0>
+            <label for="ihtml" id="lhtml" value="Retrieve HTML font page">Retrieve HTML font page </label><br>
+
+            <input type="checkbox" name="excel" id="iexcel" value=0>
+            <label for="iexcel" id="lexcel" value="Generate Excel with page tables">Generate Excel with page tables </label><br>
+
+            <input type="checkbox" name="csv" id="icsv" value=0>
+            <label for="icsv" id="lcsv" value="Generate CSV with page tables">Generate CSV with page tables </label><br>
+
+            <br><input type="submit" value="Initiate DeScraper">
+        </form>
+        <!-- the result of the search will be rendered inside this div -->
+        <div id="result"></div>
+
+        <script>
+            // Edit HTML page when Sample URL Button Clicked
+            var memURL = ""
+            // Attach a submit handler to the form
+            $( "#iurlSample" ).click(function() {
+                var $urlSample = "https://en.wikipedia.org/wiki/The_Simpsons";
+                if( $( "#iurlSample" ).is(':checked') ){
+                    var $currUrl = $( "#iurl" ).val()
+                    if ( $currUrl != memURL && $currUrl != "" ){
+                        memURL = $currUrl;
+                    }
+                    $( "#iurl" ).val($urlSample);
+                }
+                else{
+                    if( memURL == $urlSample ){
+                        $( "#iurl" ).val("");
+                    }
+                    else {
+                        $( "#iurl" ).val(memURL);
+                    }
+                }
+            });
+            // Edit HTML page when Sample Query Button Clicked
+            var memQuery = ""
+            // Attach a submit handler to the form
+            $( "#iquerySample" ).click(function() {
+                var $querySample = '[ "When The Simpsons debut?" , "What are the main characters of The Simpsons?" ]';
+                if( $( "#iquerySample" ).is(':checked') ){
+                    var $currQuery = $( "#iquery" ).val()
+                    if ($currQuery != $querySample && $currQuery != ""){
+                        memQuery = $currQuery;
+                    }
+                    $( "#iquery" ).val($querySample);
+                    $('#iqa').prop('checked', true);
+                }
+                else {
+                    if(memQuery == $querySample){
+                        $( "#iquery" ).val("");
+                    }
+                    else {
+                        $( "#iquery" ).val(memQuery);
+                    }
+                }
+                if ($( "#iquery" ).val() == ""){
+                    $('#iqa').prop('checked', false);
+                }
+                else{
+                    $('#iqa').prop('checked', true);
+                }
+            });
+            
+            // QA Explanation only allowed when NeuralQA is active
+            $( "#iexplanation" ).click(function() {
+                if( ! $( "#iqa" ).is(':checked') ){
+                    alert("[" + $( "#lexplanation" ).attr( "value" ) + "] Requires [" + $( "#lqa" ).attr( "value" )+ "]" )
+                    $('#iexplanation').prop('checked', false);
+                }
+            });
+            
+            // Toggle `Run NeuralQA` CB Based on value of `Query`
+            $( "#iquery" ).keyup(function(){
+                if( $( "#iquery" ).val() == "" ){
+                    $('#iqa').prop('checked', false);
+                }
+                else{
+                    $('#iqa').prop('checked', true);
+                }
+            });
+            // Toggle `Query` Based on value of `Run NeuralQA` CB 
+            $( "#iqa" ).click(function(){
+                if( $( "#iquery" ).val() == "" ){
+                    alert("[" + $( "#lqa" ).attr( "value" ) + "] Requires [" + $( "#lquery" ).attr( "value" )+ "]" )
+                    $('#iqa').prop('checked', false);
+                }
+                else{
+                    $('#iqa').prop('checked', true);
+                }
+            });
+
+            // Send the data using post
+            // Attach a submit handler to the form
+            $( "#searchForm" ).submit(function( event ) {
+                // Stop form from submitting normally
+                event.preventDefault();
+                
+                // Get some values from elements on the page:
+                var $form = $( this ),
+                action = $form.attr( "action" ),
+                url = $form.find( "#iurl" ).val();
+                query = jQuery.makeArray($form.find( "#iquery" ).val());
+                html_text = $form.find( "#ihtmltext" ).is(':checked');
+                qa = $form.find( "#iqa" ).is(':checked');
+                explanation = $form.find( "#iexplanation" ).is(':checked');
+                html = $form.find( "#ihtml" ).is(':checked');
+                excel = $form.find( "#iexcel" ).is(':checked');
+                csv = $form.find( "#icsv" ).is(':checked');
+
+                var payload = { 
+                    url: url,
+                    query: query,
+                    html_text: html_text,
+                    qa: qa,
+                    explanation: explanation,
+                    html: html,
+                    excel: excel,
+                    csv: csv
+                } 
+
+                // Send the data using post
+                $.ajax({
+                    type: "POST",
+                    url: action,
+                    data: JSON.stringify(payload),
+                    contentType: "application/json; charset=utf-8",
+                    traditional: true,
+                    dataType: "json",
+                    success: function( response ) {
+                        $( "#result" ).empty().append( JSON.stringify(response, null, 4) );
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
