@@ -6,6 +6,7 @@ import time
 # class Scrape(BaseModel):
 #     url: str = None
 #     query: str = None
+#     html_text: bool = False   # Return Trafilatura result
 #     qa: bool = True  # Question Answer
 #     explanation: Optional[bool] = False
 #     html: Optional[bool] = False
@@ -25,8 +26,9 @@ class Handler:
             scraper_res = html_scrape(params.url)
             if params.html:
                 response["html"] = scraper_res['html']
-            
-            response["html_text"] = scraper_res['text']
+                
+            if params.html_text:    # Return Trafilatura result
+                response["html_text"] = scraper_res['text']
 
             if params.qa:
                 response["qa"] = neuralqa_req(scraper_res['text'], params.query, reader='distilbert')
