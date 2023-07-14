@@ -65,7 +65,7 @@ Search in the browser
 ```
 http://127.0.0.1:8880/
 ```
-[Server Snippet](serverSnip.PNG)
+![serverSnip.PNG](https://github.com/franciscomvargas/descraper/blob/9ef8b744e917e2b1c2d24187261a24f484c5bfaa/serverSnip.PNG)
 
 ### Consideration
 This model require to run in paralel with neuralqa! 
