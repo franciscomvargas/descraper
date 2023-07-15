@@ -22,13 +22,18 @@ class Handler:
         async def get_scraper(params: Scrape):
             response = {}
             start_time = time.time()
-
+            if params.url == "":
+                return{
+                    "error": "DeScraper Input Params failure: Required `url`",
+                    "took": time.time() - start_time
+                }
             # Get HTML Page
             scraper_res = html_scrape(params.url, refresh_html=params.refresh_html)
             if scraper_res['request_status'] != 200:
                 return{
                     "error": "DeScraper failed to fetch url",
-                    "status_code": scraper_res['request_status']
+                    "status_code": scraper_res['request_status'],
+                    "took": time.time() - start_time
                 }
             
             response["html"] = scraper_res['html_file'] # The html file path is allways returned
