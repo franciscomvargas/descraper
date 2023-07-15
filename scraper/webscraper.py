@@ -6,37 +6,58 @@ import json
 import pandas as pd
 import httpx
 import requests
-
-#TRAFILATURA - HTML TO TEXT
-#Instalation:
- # https://trafilatura.readthedocs.io/en/latest/installation.html
-#Documentation
- # https://trafilatura.readthedocs.io/en/latest/usage-python.html
-
-# load necessary components
+import unicodedata
+import string
 from trafilatura import extract
-#Disabling signal
-# A timeout exit during extraction can be turned off if malicious data are not an issue or if you run into an error 
-# like signal only works in main thread. In this case, the following code can be useful as it explicitly changes the 
-# required setting:
 from trafilatura.settings import use_config
-def html_scrape(url):
+
+# WebScrape html page by URL
+def html_scrape(url, refresh_html = False):
+    # Check if url as been allready Scraped
+    if not refresh_html:
+        local_html = get_html_file(url)
+        if local_html != None:
+            return {
+                'request_status': 200,
+                'html_file': local_html
+            }
+        
     # Fetch Font Page html
     fetch_retry_counter = 7
     while True:
-        downloaded = httpx.get(url)
-        print('Fetch Status:', downloaded.status_code)
-        if downloaded.status_code != 200:  # assuming the download was successful
+        scrape_res = httpx.get(url)
+        print('Fetch Status:', scrape_res.status_code)
+        if scrape_res.status_code != 200:  # assuming the download was successful
             fetch_retry_counter -= 1
             if fetch_retry_counter == 0:
-                return {'error': 'Fetch error'}
+                return {
+                    'request_status': scrape_res.status_code,
+                    'html': None
+                }
             # Alta Func!!
             time.sleep(2 + random.uniform(0, 0.5))    # Xoné moñé
             print()
             continue
         # else:
         break
-    downloaded = downloaded.text
+    html = scrape_res.text
+
+    html_path = gen_html_file(url, html)
+    return {
+        'request_status': scrape_res.status_code,
+        'html_file': html_path
+    }
+
+#TRAFILATURA - HTML TO TEXT
+#Instalation:
+ # https://trafilatura.readthedocs.io/en/latest/installation.html
+#Documentation
+ # https://trafilatura.readthedocs.io/en/latest/usage-python.html
+def run_trafilatura(html_file):
+    # Get HTML string
+    with open(html_file, 'r', encoding="utf-8") as fr:
+        downloaded = fr.read()    
+
     #Disabling signal
     # A timeout exit during extraction can be turned off if malicious data are not an issue or if you run into an error 
     # like signal only works in main thread. In this case, the following code can be useful as it explicitly changes the 
@@ -44,8 +65,7 @@ def html_scrape(url):
     newconfig = use_config()
     newconfig.set("DEFAULT", "EXTRACTION_TIMEOUT", "0")
 
-    #Threshhold Chat GPT
-    # utilize while is not emplemented sumarization
+    # Run Trafilatura
     text_result = extract(
         downloaded, 
         include_links=False, # > Configs
@@ -69,14 +89,7 @@ def html_scrape(url):
         }
     )
 
-    # Handle Pege tables
-    tables_result = pd.read_html(downloaded)
-
-    return {
-        'html': downloaded,
-        'text': text_result, 
-        'tables': tables_result
-    }
+    return text_result
     
 # Run Model NeuralQA
 def neuralqa_req(context, questions, reader='distilbert'):
@@ -108,12 +121,22 @@ def neuralqa_req(context, questions, reader='distilbert'):
     return result
 
 # Generate Tables from html as CSV | Excel
-def gen_tabel_files(dataframe, csv=False, excel=False):
-    dir_path = os.path.join(Path.cwd(), "gen_files")
-    start_time = time.time()
+def gen_tabel_files(html_file, input_time=None, csv=False, excel=False):
+    # Time epoch for filename
+    if input_time == None:
+        start_time = time.time()
+    else:
+        start_time = input_time
+
+    # Create Directories if Required
+    dir_path = os.path.join(Path.cwd(), "gen_files", "tables")
     if not os.path.exists(f"{dir_path}"):
-        os.mkdir(dir_path)
+        os.makedirs(dir_path)
+
+    # Gen Pandas DataFrame
+    dataframe = pd.read_html(html_file)
     
+    # Gen Excel/CSV Files
     if excel:
         excel_file_path = os.path.join(dir_path, f"excel_tables_{start_time}.xlsx")
 
@@ -123,6 +146,7 @@ def gen_tabel_files(dataframe, csv=False, excel=False):
                 table.to_excel(writer, sheet_name=f"Table{count+1}")
         return {"excel": excel_file_path}
     else:
+        # Create Directory for CSV tables
         csv_path = os.path.join(dir_path, f"csv_tables_{start_time}")
         if not os.path.exists(csv_path):
             os.mkdir(csv_path)
@@ -140,3 +164,49 @@ def gen_tabel_files(dataframe, csv=False, excel=False):
             "excel": excel_file_path,
             "csv": csv_path
         }
+
+# Check Scraped URLS
+def get_html_file(url):
+    # encoded_url = urllib.parse.quote(url)
+    url_to_filename = clean_filename(url)
+    file_path = os.path.join(Path.cwd(), "gen_files", "html", f"{url_to_filename}.html")
+    if os.path.exists(file_path):
+        return file_path
+    else:
+        return None
+    
+# Generate HTML file
+def gen_html_file(url, html):
+    dir_path = os.path.join(Path.cwd(), "gen_files", "html")
+    if not os.path.exists(f"{dir_path}"):
+        os.makedirs(dir_path)
+
+    # encoded_url = urllib.parse.quote(url)
+    # file_path = os.path.join(dir_path, f"{encoded_url}.html")
+    url_to_filename = clean_filename(url)
+    file_path = os.path.join(dir_path, f"{url_to_filename}.html")
+    
+    with open(file_path, "w", encoding="utf-8") as fw:
+        fw.write(html)
+
+    return file_path
+
+# Convert URL to Filename
+def clean_filename(filename, replace=' '):
+    """ Credits to @wassname
+    Url: https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8
+    """
+    whitelist = "-_.() %s%s" % (string.ascii_letters, string.digits)    # valid_filename_chars
+    char_limit = 255
+    # replace spaces
+    for r in replace:
+        filename = filename.replace(r,'_')
+    
+    # keep only valid ascii chars
+    cleaned_filename = unicodedata.normalize('NFKD', filename).encode('ASCII', 'ignore').decode()
+    
+    # keep only whitelisted chars
+    cleaned_filename = ''.join(c for c in cleaned_filename if c in whitelist)
+    if len(cleaned_filename)>char_limit:
+        print(f"Warning, filename truncated because it was over {char_limit}. Filenames may no longer be unique")
+    return cleaned_filename[:char_limit]    
