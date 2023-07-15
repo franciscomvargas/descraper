@@ -3,9 +3,9 @@ from typing import Optional
 
 class Scrape(BaseModel):
     url: str = "https://en.wikipedia.org/wiki/The_Simpsons"
-    query: list = ["When the simpsons debut?"]
-    html_text: bool = False # Return Trafilatura result
-    qa: bool = True  # Run NeuralQA
+    query: Optional[list] = ["When the simpsons debut?"]
+    html_text: Optional[bool] = False # Return Trafilatura result
+    qa: Optional[bool] = True  # Run NeuralQA
     explanation: Optional[bool] = False
     refresh_html: Optional[bool] = False
     excel: Optional[bool] = False
