@@ -32,7 +32,7 @@ class Handler:
             scraper_res = html_scrape(params.url, refresh_html=params.refresh_html)
             if scraper_res['request_status'] != 200:
                 return{
-                    "error": "DeScraper failed to fetch url",
+                    "error": scraper_res['error'],
                     "status_code": scraper_res['request_status'],
                     "status_meaning": responses[scraper_res['request_status']],
                     "took": time.time() - start_time

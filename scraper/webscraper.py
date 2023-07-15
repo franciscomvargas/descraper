@@ -24,7 +24,7 @@ def html_scrape(url, refresh_html=False):
             }
         
     # Fetch Font Page html
-    fetch_retry_counter = 4
+    fetch_retry_counter = 3
     # Request as Normal Computer
     headers = {
     "authority": "www.linkedin.com",
@@ -44,20 +44,26 @@ def html_scrape(url, refresh_html=False):
     }
 
     while True:
-        scrape_res = httpx.get(
-            url,
-            headers=headers
-        )
+        try:
+            scrape_res = httpx.get(
+                url,
+                headers=headers
+            )
+        except Exception as e:
+            return {
+                'request_status': 400,
+                "error": str(e)
+            }
         print('Fetch Status:', scrape_res.status_code)
         if scrape_res.status_code != 200:  # Assert Request Sucess
             fetch_retry_counter -= 1
             if fetch_retry_counter == 0:
                 return {
                     'request_status': scrape_res.status_code,
-                    'html': None
+                    'error': f'DeScraper failed to fetch url'
                 }
             # Alta Func!!
-            time.sleep(2 + random.uniform(0, 0.5))    # Xoné moñé
+            time.sleep(1.5 + random.uniform(0, 1))    # Xoné moñé
             print()
             continue
         # else:
@@ -152,7 +158,12 @@ def gen_tabel_files(url, html_file, refresh_html=False, csv=False, excel=False):
         os.makedirs(dir_path)
 
     # Gen Pandas DataFrame
-    dataframe = pd.read_html(html_file)
+    try:
+        dataframe = pd.read_html(html_file)
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
     
     # Gen Excel/CSV Files
     if excel:
