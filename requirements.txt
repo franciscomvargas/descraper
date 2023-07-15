@@ -1,6 +1,8 @@
-trafilatura
-pandas[excel]
-httpx
-requests
 fastapi
 uvicorn
+trafilatura
+httpx
+requests
+pandas[excel]
+html5lib
+beautifulsoup4
