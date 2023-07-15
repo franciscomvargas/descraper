@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from .routemodels import Scrape
 from scraper.webscraper import *
 import time
+from http.client import responses
 
 # class Scrape(BaseModel):
 #     url: str = "https://en.wikipedia.org/wiki/The_Simpsons"
@@ -33,6 +34,7 @@ class Handler:
                 return{
                     "error": "DeScraper failed to fetch url",
                     "status_code": scraper_res['request_status'],
+                    "status_meaning": responses[scraper_res['request_status']],
                     "took": time.time() - start_time
                 }
             
