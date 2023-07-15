@@ -207,12 +207,11 @@
             $( "#searchForm" ).submit(function( event ) {
                 // Stop form from submitting normally
                 event.preventDefault();
-                
                 // Get some values from elements on the page:
                 var $form = $( this ),
                 action = $form.attr( "action" ),
                 url = $form.find( "#iurl" ).val();
-                //query = JSON.parse($form.find( "#iquery" ).val());
+                query = $form.find( "#iquery" ).val() != "" ? JSON.parse($form.find( "#iquery" ).val()) : [];
                 html_text = $form.find( "#ihtmltext" ).is(':checked');
                 qa = $form.find( "#iqa" ).is(':checked');
                 explanation = $form.find( "#iexplanation" ).is(':checked');
@@ -222,15 +221,15 @@
 
                 var payload = { 
                     url: url,
-                    //query: query,
+                    query: query,
                     html_text: html_text,
                     qa: qa,
                     explanation: explanation,
                     refresh_html: html,
                     excel: excel,
                     csv: csv
-                }   
-
+                }
+                // if (confirm("Request Payload:\n" + JSON.stringify(payload, null, 2))) {}
                 // Send the data using post
                 $.ajax({
                     type: "POST",
