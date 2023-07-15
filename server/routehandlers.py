@@ -4,10 +4,10 @@ from scraper.webscraper import *
 import time
 
 # class Scrape(BaseModel):
-#     url: str = None
-#     query: str = None
-#     html_text: bool = False   # Return Trafilatura result
-#     qa: bool = True  # Question Answer
+#     url: str = "https://en.wikipedia.org/wiki/The_Simpsons"
+#     query: Optional[list] = ["When the simpsons debut?"]
+#     html_text: Optional[bool] = False # Return Trafilatura result
+#     qa: Optional[bool] = True  # Run NeuralQA
 #     explanation: Optional[bool] = False
 #     refresh_html: Optional[bool] = False
 #     excel: Optional[bool] = False
@@ -49,7 +49,7 @@ class Handler:
                 )
                 
             if params.csv or params.excel:  # Generate Tables files
-                gen_tables_res = gen_tabel_files(scraper_res['html_file'], time=start_time, csv=params.csv, excel=params.excel)
+                gen_tables_res = gen_tabel_files(params.url, scraper_res['html_file'], refresh_html=params.refresh_html, csv=params.csv, excel=params.excel)
                 for k, v in gen_tables_res.items():
                     response[k] = v
                 

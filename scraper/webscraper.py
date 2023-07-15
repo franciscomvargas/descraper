@@ -8,11 +8,12 @@ import httpx
 import requests
 import unicodedata
 import string
+import shutil   # Delete not empty folder
 from trafilatura import extract
 from trafilatura.settings import use_config
 
 # WebScrape html page by URL
-def html_scrape(url, refresh_html = False):
+def html_scrape(url, refresh_html=False):
     # Check if url as been allready Scraped
     if not refresh_html:
         local_html = get_html_file(url)
@@ -121,12 +122,8 @@ def neuralqa_req(context, questions, reader='distilbert'):
     return result
 
 # Generate Tables from html as CSV | Excel
-def gen_tabel_files(html_file, input_time=None, csv=False, excel=False):
-    # Time epoch for filename
-    if input_time == None:
-        start_time = time.time()
-    else:
-        start_time = input_time
+def gen_tabel_files(url, html_file, refresh_html=False, csv=False, excel=False):
+    url_to_filename = clean_filename(url)
 
     # Create Directories if Required
     dir_path = os.path.join(Path.cwd(), "gen_files", "tables")
@@ -138,28 +135,49 @@ def gen_tabel_files(html_file, input_time=None, csv=False, excel=False):
     
     # Gen Excel/CSV Files
     if excel:
-        excel_file_path = os.path.join(dir_path, f"excel_tables_{start_time}.xlsx")
-
-    if not csv:
-        with pd.ExcelWriter(excel_file_path) as writer:
-            for count, table in enumerate(dataframe):
-                table.to_excel(writer, sheet_name=f"Table{count+1}")
+        excel_file_path = os.path.join(dir_path, f"excel_tables_{url_to_filename}.xlsx")
+    
+    if not csv: # Only Requested EXCEL
+        if not os.path.exists(excel_file_path) or refresh_html:
+            with pd.ExcelWriter(excel_file_path) as writer:
+                for count, table in enumerate(dataframe):
+                    table.to_excel(writer, sheet_name=f"Table{count+1}")
         return {"excel": excel_file_path}
     else:
         # Create Directory for CSV tables
-        csv_path = os.path.join(dir_path, f"csv_tables_{start_time}")
+        csv_path = os.path.join(dir_path, f"csv_tables_{url_to_filename}")
+        if os.path.exists(csv_path) and refresh_html:
+            shutil.rmtree(csv_path)
         if not os.path.exists(csv_path):
             os.mkdir(csv_path)
 
-    if not excel:
-        for count, table in enumerate(dataframe):
-            table.to_csv(os.path.join(csv_path, f"table{count+1}.csv"), sep=",", index=None)
-        return {"csv": csv_path}
-    else:
-        with pd.ExcelWriter(excel_file_path) as writer:
+    if not excel: # Only Requested CSV
+        if len(os.listdir(csv_path)) == 0:
             for count, table in enumerate(dataframe):
-                table.to_excel(writer, sheet_name=f"Table{count+1}")
                 table.to_csv(os.path.join(csv_path, f"table{count+1}.csv"), sep=",", index=None)
+        return {"csv": csv_path}
+    
+    else:         # Requested CSV and EXCEL
+        gen_excel = False
+        gen_csv = False
+        if not os.path.exists(excel_file_path) or refresh_html:
+            gen_excel = True
+        if os.listdir(csv_path) == 0:
+            gen_csv = True
+
+        if gen_excel and gen_csv:
+            with pd.ExcelWriter(excel_file_path) as writer:
+                for count, table in enumerate(dataframe):
+                    table.to_excel(writer, sheet_name=f"Table{count+1}")
+                    table.to_csv(os.path.join(csv_path, f"table{count+1}.csv"), sep=",", index=None)
+        elif gen_excel:
+            with pd.ExcelWriter(excel_file_path) as writer:
+                for count, table in enumerate(dataframe):
+                    table.to_excel(writer, sheet_name=f"Table{count+1}")
+        elif gen_csv:
+            for count, table in enumerate(dataframe):
+                table.to_csv(os.path.join(csv_path, f"table{count+1}.csv"), sep=",", index=None)
+
         return {
             "excel": excel_file_path,
             "csv": csv_path
@@ -180,9 +198,7 @@ def gen_html_file(url, html):
     dir_path = os.path.join(Path.cwd(), "gen_files", "html")
     if not os.path.exists(f"{dir_path}"):
         os.makedirs(dir_path)
-
-    # encoded_url = urllib.parse.quote(url)
-    # file_path = os.path.join(dir_path, f"{encoded_url}.html")
+        
     url_to_filename = clean_filename(url)
     file_path = os.path.join(dir_path, f"{url_to_filename}.html")
     
