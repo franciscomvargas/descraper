@@ -7,6 +7,6 @@ class Scrape(BaseModel):
     html_text: bool = False # Return Trafilatura result
     qa: bool = True  # Run NeuralQA
     explanation: Optional[bool] = False
-    html: Optional[bool] = False
+    refresh_html: Optional[bool] = False
     excel: Optional[bool] = False
     csv: Optional[bool] = False
