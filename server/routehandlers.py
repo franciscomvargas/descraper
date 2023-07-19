@@ -8,9 +8,9 @@ from http.client import responses
 #     url: str = "https://en.wikipedia.org/wiki/The_Simpsons"
 #     query: Optional[list] = ["When the simpsons debut?"]
 #     html_text: Optional[bool] = False # Return Trafilatura result
-#     qa: Optional[bool] = True  # Run NeuralQA
+#     qa_port: Optional[int] = 8888  # NeuralQA Service port
 #     explanation: Optional[bool] = False
-#     refresh_html: Optional[bool] = False
+#     overwrite_files: Optional[bool] = False
 #     excel: Optional[bool] = False
 #     csv: Optional[bool] = False
 
@@ -29,7 +29,7 @@ class Handler:
                     "took": time.time() - start_time
                 }
             # Get HTML Page
-            scraper_res = html_scrape(params.url, refresh_html=params.refresh_html)
+            scraper_res = html_scrape(params.url, overwrite_files=params.overwrite_files)
             if scraper_res['request_status'] != 200:
                 return{
                     "error": scraper_res['error'],
@@ -43,15 +43,18 @@ class Handler:
             if params.html_text:            # RUN Trafilatura Result
                 response["html_text"] = run_trafilatura(scraper_res['html_file'])
 
-            if params.qa:                   # RUN NeuraQA
+            if isinstance(params.query, list) and len(params.query) > 0:                   # RUN NeuraQA
                 response["qa"] = neuralqa_req(
-                    response["html_text"] if params.html_text else run_trafilatura(scraper_res['html_file']), 
-                    params.query, 
+                    response["html_text"] if params.html_text else run_trafilatura(scraper_res['html_file']),   # Context of QA is result of Trafilatura (HTML2TxT)
+                    params.query,
+                    neuralqa_port = params.qa_port,
                     reader='distilbert'
                 )
+
+
                 
             if params.csv or params.excel:  # Generate Tables files
-                gen_tables_res = gen_tabel_files(params.url, scraper_res['html_file'], refresh_html=params.refresh_html, csv=params.csv, excel=params.excel)
+                gen_tables_res = gen_tabel_files(params.url, scraper_res['html_file'], overwrite_files=params.overwrite_files, csv=params.csv, excel=params.excel)
                 for k, v in gen_tables_res.items():
                     response[k] = v
                 

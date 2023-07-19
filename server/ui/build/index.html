@@ -67,7 +67,8 @@
                     <label for="ihtmltext" id="lhtmltext" value="Retrieve HTML2Text"><b>Retrieve HTML2Text</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Trafilatura Result) </label><br>
                     
                     <input type="checkbox" name="qa" id="iqa" value=0>
-                    <label for="iqa" id="lqa" value="Retrieve Querys Answers"><b>Retrieve Querys Answers</b>&nbsp;(Run NeuralQA) </label><br>
+                    <label for="iqa" id="lqa" value="Run NeuralQA"><b>Run NeuralQA</b>&nbsp;</label>
+                    <input type="number" id="iqa_port" name="qa_port" placeholder="NeuralQA TCP/Ip Port" min=1025 max=65535/><br>
 
                     <input type="checkbox" name="explanation" id="iexplanation" value=0>
                     <label for="iexplanation" id="lexplanation" value="NeuralQA Explanation"><b>NeuralQA Explanation</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Comming Soon) </label><br>
@@ -79,8 +80,8 @@
                     <label for="icsv" id="lcsv" value="Generate CSV with webpage tables"><b>Generate CSV with webpage tables</b> </label><br>
 
                     <div style="text-align: right;">
-                        <label for="ihtml" id="lhtml" value="Overwrite local files">Overwrite local files</label>
-                        <input type="checkbox" name="html" id="ihtml" value=0><br><br>
+                        <label for="ioverwrite" id="loverwrite" value="Overwrite local files">Overwrite local files</label>
+                        <input type="checkbox" name="overwrite" id="ioverwrite" value=0><br><br>
                     </div>
                     
                     <div class="sharing">
@@ -148,6 +149,7 @@
                     }
                     $( "#iquery" ).val($querySample);
                     $('#iqa').prop('checked', true);
+                    $( "#iqa_port" ).val(8888);
                 }
                 else {
                     if(memQuery == $querySample){
@@ -155,10 +157,12 @@
                     }
                     else {
                         $( "#iquery" ).val(memQuery);
+                        $( "#iqa_port" ).val(8888);
                     }
                 }
                 if ($( "#iquery" ).val() == ""){
                     $('#iqa').prop('checked', false);
+                    $( "#iqa_port" ).val("");
                 }
                 else{
                     $('#iqa').prop('checked', true);
@@ -177,9 +181,11 @@
             $( "#iquery" ).keyup(function(){
                 if( $( "#iquery" ).val() == "" ){
                     $('#iqa').prop('checked', false);
+                    $( "#iqa_port" ).val("");
                 }
                 else{
                     $('#iqa').prop('checked', true);
+                    $( "#iqa_port" ).val(8888);
                 }
             });
             // Toggle `Query` Based on value of `Run NeuralQA` CB 
@@ -214,9 +220,9 @@
                 url = $form.find( "#iurl" ).val();
                 query = $form.find( "#iquery" ).val() != "" ? JSON.parse($form.find( "#iquery" ).val()) : [];
                 html_text = $form.find( "#ihtmltext" ).is(':checked');
-                qa = $form.find( "#iqa" ).is(':checked');
+                qa_port = $form.find( "#iqa_port" ).val() != "" ? $form.find( "#iqa_port" ).val() : 8888;
                 explanation = $form.find( "#iexplanation" ).is(':checked');
-                html = $form.find( "#ihtml" ).is(':checked');
+                overwrite = $form.find( "#ioverwrite" ).is(':checked');
                 excel = $form.find( "#iexcel" ).is(':checked');
                 csv = $form.find( "#icsv" ).is(':checked');
 
@@ -224,12 +230,14 @@
                     url: url,
                     query: query,
                     html_text: html_text,
-                    qa: qa,
+                    qa_port: qa_port,
                     explanation: explanation,
-                    refresh_html: html,
+                    overwrite_files: overwrite,
                     excel: excel,
                     csv: csv
                 }
+                alert( JSON.stringify(payload, null, 2) )
+
                 // if (confirm("Request Payload:\n" + JSON.stringify(payload, null, 2))) {}
                 // Send the data using post
                 $.ajax({

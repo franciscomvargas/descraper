@@ -13,9 +13,9 @@ from trafilatura import extract
 from trafilatura.settings import use_config
 
 # WebScrape html page by URL
-def html_scrape(url, refresh_html=False):
+def html_scrape(url, overwrite_files=False):
     # Check if url as been allready Scraped
-    if not refresh_html:
+    if not overwrite_files:
         local_html = get_html_file(url)
         if local_html != None:
             return {
@@ -120,8 +120,8 @@ def run_trafilatura(html_file):
     return text_result
     
 # Run Model NeuralQA
-def neuralqa_req(context, questions, reader='distilbert'):
-    url = "http://127.0.0.1:8888/api/answers"
+def neuralqa_req(context, questions, neuralqa_port=8888, reader='distilbert'):
+    url = f"http://127.0.0.1:{neuralqa_port}/api/answers"
     if reader == 'distilbert':
         model = "twmkn9/distilbert-base-uncased-squad2"
     elif reader == 'bert':
@@ -149,7 +149,7 @@ def neuralqa_req(context, questions, reader='distilbert'):
     return result
 
 # Generate Tables from html as CSV | Excel
-def gen_tabel_files(url, html_file, refresh_html=False, csv=False, excel=False):
+def gen_tabel_files(url, html_file, overwrite_files=False, csv=False, excel=False):
     url_to_filename = clean_filename(url)
 
     # Create Directories if Required
@@ -170,7 +170,7 @@ def gen_tabel_files(url, html_file, refresh_html=False, csv=False, excel=False):
         excel_file_path = os.path.join(dir_path, f"excel_tables_{url_to_filename}.xlsx")
     
     if not csv: # Only Requested EXCEL
-        if not os.path.exists(excel_file_path) or refresh_html:
+        if not os.path.exists(excel_file_path) or overwrite_files:
             with pd.ExcelWriter(excel_file_path) as writer:
                 for count, table in enumerate(dataframe):
                     table.to_excel(writer, sheet_name=f"Table{count+1}")
@@ -178,7 +178,7 @@ def gen_tabel_files(url, html_file, refresh_html=False, csv=False, excel=False):
     else:
         # Create Directory for CSV tables
         csv_path = os.path.join(dir_path, f"csv_tables_{url_to_filename}")
-        if os.path.exists(csv_path) and refresh_html:
+        if os.path.exists(csv_path) and overwrite_files:
             shutil.rmtree(csv_path)
         if not os.path.exists(csv_path):
             os.mkdir(csv_path)
@@ -192,7 +192,7 @@ def gen_tabel_files(url, html_file, refresh_html=False, csv=False, excel=False):
     else:         # Requested CSV and EXCEL
         gen_excel = False
         gen_csv = False
-        if not os.path.exists(excel_file_path) or refresh_html:
+        if not os.path.exists(excel_file_path) or overwrite_files:
             gen_excel = True
         if os.listdir(csv_path) == 0:
             gen_csv = True
