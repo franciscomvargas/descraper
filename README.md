@@ -11,7 +11,7 @@ After instalation of this repository ([Windows](#Windows-Instalation)) and [Neur
 
 ### By POST Request
 You can use any programing language to make this request, I will use Python to ilustrate how you can do it:
-```
+```python
 import requests
 
 descraper_url = "http://127.0.0.1:8880/api/scraper"
@@ -31,6 +31,7 @@ response = requests.request("POST", descraper_url, json=payload)
 
 print(response.json())
 ```
+
 #### **Payload Explanation**
 |Parameter|Type|Optional|Description|
 |---|---|---|---|
