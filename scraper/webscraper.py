@@ -5,7 +5,6 @@ import random
 import json
 import pandas as pd
 import httpx
-import requests
 import unicodedata
 import string
 import shutil   # Delete not empty folder
@@ -119,34 +118,6 @@ def run_trafilatura(html_file):
 
     return text_result
     
-# Run Model NeuralQA
-def neuralqa_req(context, questions, neuralqa_port=8888, reader='distilbert'):
-    url = f"http://127.0.0.1:{neuralqa_port}/api/answers"
-    if reader == 'distilbert':
-        model = "twmkn9/distilbert-base-uncased-squad2"
-    elif reader == 'bert':
-        model = "deepset/bert-base-cased-squad2"
-    else:
-        print("Invalid Reader!\nValid Readers: ['distilbert', 'bert']")
-        return None
-    result = list()
-    for question in questions:
-        payload = {
-            "max_documents": 5,
-            "context": context,
-            "query": question,
-            "fragment_size": 350,
-            "reader": model,
-            "retriever": "none",
-            "tokenstride": 0,
-            "relsnip": True,
-            "expansionterms": []
-        }
-        response = requests.request("POST", url, json=payload)
-        print(f"Question: {question}")
-        print(f"Qtty of answers = {len(response.json()['answers'])}\n")
-        result.append(response.json())
-    return result
 
 # Generate Tables from html as CSV | Excel
 def gen_tabel_files(url, html_file, overwrite_files=False, csv=False, excel=False):
