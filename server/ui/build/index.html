@@ -7,6 +7,25 @@
         <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            td, th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                font-size: 0.875em;
+                padding: 4px;
+            }
+            td.expander {
+                background-color: #2dcac0;
+            }
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+        </style>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -60,7 +79,19 @@
                         <h2><label for="iquery" id="lquery" value="Query">Query ( str[] )</label></h2>
                         <input type="text" name="query" id="iquery" placeholder="Data of interest" size="67em">
                         <input type="checkbox" name="querySample" id="iquerySample">
-                        <label for="iquerySample">Try Query Sample </label> <br>
+                        <label for="iquerySample">Try Query Sample </label> 
+                        <button type="button" id="iexpand" class="btn--secondary" style="border-radius:.25em; 
+                        border:0.5px solid rgba(41,47,54,0.2);
+                        -webkit-transition:background-color .2s linear; 
+                        -moz-transition:background-color .2s linear;
+                        -o-transition:background-color .2s linear;
+                        transition:background-color .2s linear"
+                        title="Query expansion works as follows. First, a set of rules are used to determine which token in the query to expand. These rules are chosen to improve recall (surface relevant queries) without altering the semantics of the original query. Example rules include only expanding ADJECTIVES AND ADVERBS ; other parts of speech such as nouns, proper nouns or even named entities are not expanded. Once expansion candidates are selected, they are then iteratively masked and a masked language model is used to predict tokens that best complete the sentence given the surrounding tokens."
+                        hidden>Expand Queries</button><br>
+                    </div>
+
+                    <div id="expansionbox">
+
                     </div>
                     
                     <input type="checkbox" name="htmltext" id="ihtmltext" value=0>
@@ -69,9 +100,6 @@
                     <input type="checkbox" name="qa" id="iqa" value=0>
                     <label for="iqa" id="lqa" value="Run NeuralQA"><b>Run NeuralQA</b>&nbsp;</label>
                     <input type="number" id="iqa_port" name="qa_port" placeholder="NeuralQA TCP/Ip Port" min=1025 max=65535/><br>
-
-                    <input type="checkbox" name="explanation" id="iexplanation" value=0>
-                    <label for="iexplanation" id="lexplanation" value="NeuralQA Explanation"><b>NeuralQA Explanation</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Comming Soon) </label><br>
 
                     <input type="checkbox" name="excel" id="iexcel" value=0>
                     <label for="iexcel" id="lexcel" value="Generate Excel with webpage tables"><b>Generate Excel with webpage tables</b> </label><br>
@@ -113,11 +141,11 @@
             <p>© 2023 - DeSOTA</p>
         </div>
         
-        <script  src="script.js"></script>
+        <!-- <script  src="script.js"></script> -->
 
         <script>
             // Edit HTML page when Sample URL Button Clicked
-            var memURL = ""
+            var memURL = "";
             // Attach a submit handler to the form
             $( "#iurlSample" ).click(function() {
                 var $urlSample = "https://en.wikipedia.org/wiki/The_Simpsons";
@@ -138,7 +166,7 @@
                 }
             });
             // Edit HTML page when Sample Query Button Clicked
-            var memQuery = ""
+            var memQuery = "";
             // Attach a submit handler to the form
             $( "#iquerySample" ).click(function() {
                 var $querySample = '[ "When The Simpsons debut?" , "What characters are in The Simpsons?" ]';
@@ -150,44 +178,139 @@
                     $( "#iquery" ).val($querySample);
                     $('#iqa').prop('checked', true);
                     $( "#iqa_port" ).val(8888);
+                    $( "#iexpand" ).show();
+                    $( "#result" ).empty().append("Valid Query\n\n");
                 }
                 else {
                     if(memQuery == $querySample){
                         $( "#iquery" ).val("");
+                        $( "#expansionbox" ).empty().append( "" );
+                        $( "#result" ).empty().append("\n\n");
+                        expand_counter = 0;
+                        expand_counter_list=[]
                     }
                     else {
                         $( "#iquery" ).val(memQuery);
-                        $( "#iqa_port" ).val(8888);
+                        try{
+                            if(Array.isArray(JSON.parse($( "#iquery" ).val()))){
+                                $('#iqa').prop('checked', true);
+                                $( "#iqa_port" ).val(8888);
+                                $( "#iexpand" ).show();
+                                $( "#result" ).empty().append("Valid Query\n\n");
+                            }
+                        }
+                        catch{
+                            $('#iqa').prop('checked', false);
+                            $( "#iqa_port" ).val("");
+                            $( "#iexpand" ).hide();
+                            $( "#result" ).empty().append("Invalid Query:\nTry Query Sample");
+                        }
                     }
                 }
                 if ($( "#iquery" ).val() == ""){
                     $('#iqa').prop('checked', false);
                     $( "#iqa_port" ).val("");
+                    $( "#iexpand" ).hide();
+                    $( "#expansionbox" ).empty().append( "" );
+                    $( "#result" ).empty().append("\n\n");
+                    expand_counter = 0;
+                    expand_counter_list=[]
                 }
                 else{
                     $('#iqa').prop('checked', true);
                 }
             });
-            
-            // QA Explanation only allowed when NeuralQA is active
-            $( "#iexplanation" ).click(function() {
-                if( ! $( "#iqa" ).is(':checked') ){
-                    alert("[" + $( "#lexplanation" ).attr( "value" ) + "] Requires [" + $( "#lqa" ).attr( "value" )+ "]" )
-                    $('#iexplanation').prop('checked', false);
+            var expand_counter = 0;
+            var expand_counter_list=[]
+            // QA Expand Query Request
+            $( "#iexpand" ).click(function( event ) {
+                // Stop form from submitting normally
+                event.preventDefault();
+                
+                // Get some values from elements on the page:
+                var query = JSON.parse($( "#iquery" ).val());
+
+                var payload = { 
+                    query: query
                 }
+                
+                // Send the data using post
+                $.ajax({
+                    type: "POST",
+                    url: "/api/expand",
+                    data: JSON.stringify(payload),
+                    contentType: "application/json; charset=utf-8",
+                    traditional: true,
+                    dataType: "json",
+                    success: function( response ) {
+                        html_element = ""
+                        for (const key in response){
+                            if (key == "took"){
+                                continue;
+                            }
+                            // table header
+                            html_element += `<table><tbody><tr>`
+
+                            response[key]["expansions"].forEach(element => {
+                                html_element += `<th title="` + element["pos_desc"] + `">` + element["pos"] + `</th>`;
+                            });
+                            
+                            // table body
+                            html_element += `</tr>\n<tr>`;
+                            aux_counter = 0;
+                            response[key]["expansions"].forEach(element => {
+                                if (element["expansion"] == null){
+                                    html_element += `<td>` + element["token"] + `</td>`;
+                                }
+                                else {
+                                    html_element += `<td class="expander"><fieldset><legend>` + element["token"] + `</legend>`;
+                                    element["expansion"].forEach(exp =>{
+                                        html_element += `<div><input type="checkbox" id="term` + expand_counter + `" value="` + exp["token"] + `">`;
+                                        html_element += `<label for="term` + expand_counter + `"> ` + exp["token"] + `</label>`;
+                                        expand_counter += 1;
+                                        aux_counter += 1;
+                                    })
+                                    html_element += `</fieldset></td>`;
+                                }
+                            });
+                            expand_counter_list.push(aux_counter);
+                            html_element += `</tr></tbody></table><br>\n`; 
+                        }
+                        $( "#expansionbox" ).empty().append( html_element );
+                    }
+                });
             });
             
             // Toggle `Run NeuralQA` CB Based on value of `Query`
             $( "#iquery" ).keyup(function(){
                 if( $( "#iquery" ).val() == "" ){
                     $('#iqa').prop('checked', false);
+                    $( "#iquerySample" ).prop('checked', false);
                     $( "#iqa_port" ).val("");
+                    $( "#iexpand" ).hide();
+                    $( "#expansionbox" ).empty().append( "" );
+                    $( "#result" ).empty().append("\n\n");
+                    expand_counter = 0;
+                    expand_counter_list=[]
                 }
                 else{
-                    $('#iqa').prop('checked', true);
-                    $( "#iqa_port" ).val(8888);
+                    try{
+                        if(Array.isArray(JSON.parse($( "#iquery" ).val()))){
+                            $( "#result" ).empty().append("Valid Query\n\n");
+                            $('#iqa').prop('checked', true);
+                            $( "#iqa_port" ).val(8888);
+                            $( "#iexpand" ).show();
+                        }
+                    }
+                    catch{
+                        $('#iqa').prop('checked', false);
+                        $( "#iqa_port" ).val("");
+                        $( "#iexpand" ).hide();
+                        $( "#result" ).empty().append("Invalid Query:\nTry Query Sample");
+                    }
                 }
             });
+
             // Toggle `Query` Based on value of `Run NeuralQA` CB 
             $( "#iqa" ).click(function(){
                 if( $( "#iquery" ).val() == "" ){
@@ -221,22 +344,37 @@
                 query = $form.find( "#iquery" ).val() != "" ? JSON.parse($form.find( "#iquery" ).val()) : [];
                 html_text = $form.find( "#ihtmltext" ).is(':checked');
                 qa_port = $form.find( "#iqa_port" ).val() != "" ? $form.find( "#iqa_port" ).val() : 8888;
-                explanation = $form.find( "#iexplanation" ).is(':checked');
                 overwrite = $form.find( "#ioverwrite" ).is(':checked');
                 excel = $form.find( "#iexcel" ).is(':checked');
                 csv = $form.find( "#icsv" ).is(':checked');
 
+                // Expansion Terms Constructor for multiple queries
+                let term_id = 0;
+                let expansionterms = [];
+                expand_counter_list.forEach(el =>{
+                    let tmp_expansionterms = [];
+                    for(let i=0; i<=el; i++){
+                        if(i==el){
+                            expansionterms.push(tmp_expansionterms)
+                            continue;
+                        }
+                        if($form.find( "#term"+term_id ).is(':checked')){
+                            tmp_expansionterms.push($form.find( "#term"+term_id ).val())
+                        }
+                        term_id += 1;
+                    }
+                })
+                
                 var payload = { 
                     url: url,
                     query: query,
                     html_text: html_text,
                     qa_port: qa_port,
-                    explanation: explanation,
+                    expansionterms: expansionterms,
                     overwrite_files: overwrite,
                     excel: excel,
                     csv: csv
                 }
-                alert( JSON.stringify(payload, null, 2) )
 
                 // if (confirm("Request Payload:\n" + JSON.stringify(payload, null, 2))) {}
                 // Send the data using post
