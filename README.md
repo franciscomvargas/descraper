@@ -21,7 +21,7 @@ payload = {
     "html_text": True,
     "query": ["When the simpsons debut?"],
     "qa_port": 8888,
-    "explanation": False,
+    "expansionterms": [],
     "excel": True,
     "csv": True
     "overwrite_files": False,
@@ -36,10 +36,10 @@ print(response.json())
 |Parameter|Type|Optional|Description|
 |---|---|---|---|
 |url|string|&cross;|The link of the website to webscrape|
-|html_text|bolean|&check;|Run Trafilatura - get text from webpage|
+|html_text|bolean|&check;|Run Trafilatura - get text from webpage|[Title](README.md)
 |query|array of strings|&check;|When running NeuralQA is required to specify what data you want to retrieve|
 |qa_port|integer|&check;|NeuralQA is a TCP/Ip service runing in paralel, here is possible to specify it's Port. Default is 8888|
-|explanation|bolean|&check;|Not implemented yiet but NeuralQA have the ability to explain the decisions made, this parameter will switch ON/OFF the output of this|
+|expansionterms|array of strings for each query|&check;|NeuralQA have the ability to expand queries in order to improve the results. This by adding expansion terms (keywords) in the NeuralQA request. To get the expansion terms you need to make a perliminar POST request to "http://127.0.0.1:8880/api/expand" with the simple payload {query: [array of queries]}. Get a full grasp of this funtionality with the User Interface|
 |excel|bolean|&check;|Generate Excel File with webpage tables|
 |csv|bolean|&check;|Generate CSV Files with webpage tables|
 |overwrite_files|bolean|&check;|DeScraper stores locally the scraped HTML pages and the Generated Tables, therefore, everytime you re-request the same URL you can overwrite the files switching ON this parameter (for example if the webpage has been updated)|
@@ -48,7 +48,20 @@ print(response.json())
  - [Open UI in the browser](###Open-UI-in-Browser)
  - Fill with payload parameters:
 
-![UI Explanation](server/UI_payload_explanation.png)
+![UI Payload Explanation](UI_payload_explanation.png)
+
+#### **NeuralQA Query Expansion**
+ - Explanation:
+   - First, a set of rules are used to determine which token in the query to expand. These rules are chosen to improve recall (surface relevant queries) without altering the semantics of the original query. Example rules include only expanding ADJECTIVES, ADVERBS and NOUNS ; other parts of speech are not expandable. Once expansion candidates are selected, they are then iteratively masked and a masked language model is used to predict tokens that best complete the sentence given the surrounding tokens.
+
+ - Try it out:
+   1. When Query is filled with a array of strings press the "Expand Queries" button;
+   2. Select the candidates that best fit your queries;
+   ![UI Expand Queries](Descraper_UI_ExpandQuery.PNG)
+   3. Finally when you press "Initiate DeScraper" the selected candidates will be added to the post request as `expansionterms`:
+   ![Request With Expansion Terms](Descraper_UI_PayloadW_expansionterms.PNG)
+
+ 
 
 
 # Windows Instalation
