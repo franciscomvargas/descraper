@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from .routemodels import Scrape
+from .routemodels import Scrape, Expansion
 from scraper.webscraper import *
+from question_answer.qa import *
 import time
 from http.client import responses
 
@@ -9,7 +10,7 @@ from http.client import responses
 #     query: Optional[list] = ["When the simpsons debut?"]
 #     html_text: Optional[bool] = False # Return Trafilatura result
 #     qa_port: Optional[int] = 8888  # NeuralQA Service port
-#     explanation: Optional[bool] = False
+#     expansionterms: Optional[list] = []
 #     overwrite_files: Optional[bool] = False
 #     excel: Optional[bool] = False
 #     csv: Optional[bool] = False
@@ -19,6 +20,26 @@ class Handler:
         router = APIRouter()
         self.router = router
 
+        @router.post("/expand")
+        async def get_expansion(params: Expansion):
+            """Return  an expansion for a given query
+
+            Returns:
+                [dictionary]: [expansion]
+            """
+            start_time = time.time()
+            expanded_queries = neuralqa_expand(params.query)
+            result_json = {}
+            expansion_json = []
+            for count, expanded_query in enumerate(expanded_queries):
+                result_json[count] = {
+                    "terms": expanded_query["terms"],
+                    "expansions": expanded_query["expansions"],
+                    "took": expanded_query["took"],
+                }
+            result_json["took"] = time.time() - start_time
+            return result_json
+        
         @router.post("/scraper")
         async def get_scraper(params: Scrape):
             response = {}
@@ -47,6 +68,7 @@ class Handler:
                 response["qa"] = neuralqa_req(
                     response["html_text"] if params.html_text else run_trafilatura(scraper_res['html_file']),   # Context of QA is result of Trafilatura (HTML2TxT)
                     params.query,
+                    expansionterms = params.expansionterms,
                     neuralqa_port = params.qa_port,
                     reader='distilbert'
                 )
