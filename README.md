@@ -5,9 +5,9 @@ This project purpose is:
  - Generate HTML tables in Excel and/or CSV format with pandas.read_html.
 
 ## How it works
-After instalation of this repository ([Windows](#Windows-Instalation)) and [NeuralQA](https://github.com/franciscomvargas/neuralqa) make your first request:
+After instalation of this repository ([Windows](#windows-instalation)) and [NeuralQA](https://github.com/franciscomvargas/neuralqa) make your first request:
 
- - Begin by starting the API server ([Windows](###Start-API-server-(win)))
+ - Begin by starting the API server ([Windows](#start-api-server-win))
 
 ### By POST Request
 You can use any programing language to make this request, I will use Python to ilustrate how you can do it:
@@ -36,16 +36,16 @@ print(response.json())
 |Parameter|Type|Optional|Description|
 |---|---|---|---|
 |url|string|&cross;|The link of the website to webscrape|
-|html_text|bolean|&check;|Run Trafilatura - get text from webpage|[Title](README.md)
+|html_text|bolean|&check;|Run Trafilatura - get text from webpage|
 |query|array of strings|&check;|When running NeuralQA is required to specify what data you want to retrieve|
 |qa_port|integer|&check;|NeuralQA is a TCP/Ip service runing in paralel, here is possible to specify it's Port. Default is 8888|
-|expansionterms|array of strings for each query|&check;|NeuralQA have the ability to expand queries in order to improve the results. This by adding expansion terms (keywords) in the NeuralQA request. To get the expansion terms you need to make a perliminar POST request to "http://127.0.0.1:8880/api/expand" with the simple payload {query: [array of queries]}. Get a full grasp of this funtionality with the User Interface|
+|expansionterms|array of strings for each query|&check;|NeuralQA have the ability to expand queries in order to improve the results. This by adding expansion terms (keywords) in the NeuralQA request. To get the expansion terms you need to make a perliminar POST request to "http://127.0.0.1:8880/api/expand" with the simple payload {query: [array of queries]}. Get a full grasp of this funtionality with the [User Interface](#neuralqa-query-expansion)|
 |excel|bolean|&check;|Generate Excel File with webpage tables|
 |csv|bolean|&check;|Generate CSV Files with webpage tables|
 |overwrite_files|bolean|&check;|DeScraper stores locally the scraped HTML pages and the Generated Tables, therefore, everytime you re-request the same URL you can overwrite the files switching ON this parameter (for example if the webpage has been updated)|
 
 ### By User Interface
- - [Open UI in the browser](###Open-UI-in-Browser)
+ - [Open UI in the browser](#open-ui-in-browser)
  - Fill with payload parameters:
 
 ![UI Payload Explanation](UI_payload_explanation.png)
