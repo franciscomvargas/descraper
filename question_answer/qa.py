@@ -1,5 +1,5 @@
 import requests
-
+import json
 # Run Model NeuralQA
 def neuralqa_req(context, questions, expansionterms=[], neuralqa_port=8888, reader='distilbert'):
     url = f"http://127.0.0.1:{neuralqa_port}/api/answers"
@@ -24,6 +24,9 @@ def neuralqa_req(context, questions, expansionterms=[], neuralqa_port=8888, read
             "relsnip": True,
             "expansionterms": expansionterms[count] if expansionterms != [] else []
         }
+        payload_print = payload.copy()
+        payload_print["context"] = payload_print["context"][:80]
+        print(f"[DEBUG]->neuralqa api/answer payload:\n{json.dumps(payload_print, indent=2)}")
         response = requests.request("POST", url, json=payload)
         # print(f"Payload:\n{payload}")
         print(f"Qtty of answers = {len(response.json()['answers'])}\n")
