@@ -123,7 +123,7 @@ cd %UserProfile%\Desota_Models\DeScraper
 %UserProfile%\miniconda3\condabin\activate 
 conda deactivate 
 conda activate ./env 
-python cli.py ui
+python cli.py ui --port 8880
 
 ```
 ## Open UI in Browser
