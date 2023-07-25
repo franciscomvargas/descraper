@@ -80,15 +80,15 @@ def html_scrape(url, overwrite_files=False):
  # https://trafilatura.readthedocs.io/en/latest/installation.html
 #Documentation
  # https://trafilatura.readthedocs.io/en/latest/usage-python.html
-def run_trafilatura(html_file):
+def run_trafilatura(html_file, output_format='txt'):
     # Get HTML string
     with open(html_file, 'r', encoding="utf-8") as fr:
-        downloaded = fr.read()    
-
+        downloaded = fr.read()
     #Disabling signal
     # A timeout exit during extraction can be turned off if malicious data are not an issue or if you run into an error 
     # like signal only works in main thread. In this case, the following code can be useful as it explicitly changes the 
     # required setting:
+    
     newconfig = use_config()
     newconfig.set("DEFAULT", "EXTRACTION_TIMEOUT", "0")
 
@@ -99,12 +99,12 @@ def run_trafilatura(html_file):
         # include_formatting=True,  #(only valuable if output_format is set to XML)
         include_tables=False,
         include_images=False, 
-        output_format='text',
-        deduplicate=True, 
+        output_format=output_format,
+        deduplicate=False,          # Unfurtunately the results are not consistent enough :/
         url_blacklist=set(), # Edited in core -> extract() -> bare_extraction() -> extract_metadata() -> check_authors()
         favor_precision = True, 
         favor_recall = False,
-        #bare_extraction = False,
+        bare_extraction = False,
         no_fallback=True,           # > Optimizing for speed
         include_comments=False,
         config=newconfig,           # > Disabling signal
@@ -115,8 +115,8 @@ def run_trafilatura(html_file):
             #"max_date": "2018-07-01"
         }
     )
-
-    return text_result
+    print(f"[DEBUG] -> Trafilatura type(text_result)={type(text_result)}")
+    return json.loads(text_result) if output_format=='json' else text_result
     
 
 # Generate Tables from html as CSV | Excel
