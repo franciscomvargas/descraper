@@ -1,4 +1,6 @@
-# About DeScraper
+<details>
+  <summary><h1>About DeScraper</h1></summary>
+
 ## Description
 This project purpose is:
  - Connect with the AI models [NeuralQA](https://github.com/victordibia/neuralqa/) (Large Datasets Question Answer) and [Trafilatura](https://github.com/adbar/trafilatura/) (HTML2Text);
@@ -61,39 +63,40 @@ print(response.json())
    3. Finally when you press "Initiate DeScraper" the selected candidates will be added to the post request as `expansionterms`:
    ![Request With Expansion Terms](Descraper_UI_PayloadW_expansionterms.PNG)
 
- 
+</details>
 
 
-# Windows Instalation
+<details>
+  <summary><h1>Windows Instalation</h1></summary>
+  
 ## Create Project Folder 
-Model Folder:
-> %UserProfile%\Desota_Models\DeScraper
+***Model PATH:*** %UserProfile%\Desota\Desota_Models\DeScraper
 
-Go to CMD (command prompt)
-> WIN + "R" 
-> Write "cmd" 
+* Go to CMD (command prompt):
+  * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
+  * Search: `cmd` 
 
-Copy-Paste the following comands 
-```
-mkdir %UserProfile%\Desota_Models\DeScraper
-cd %UserProfile%\Desota_Models\DeScraper
+* Copy-Paste the following comands: 
+```cmd
+mkdir %UserProfile%\Desota\Desota_Models\DeScraper
+cd %UserProfile%\Desota\Desota_Models\DeScraper
 
 ```
 
 ## Test if conda is instaled
 
 Copy-Paste the following comands 
-```
-conda --version
+```cmd
+%UserProfile%\miniconda3\condabin\conda --version
 ```
 if response is:
-> 'conda' is not recognized as an internal or external command,operable program or batch 
+>  '`YourUserPath`\miniconda3\condabin\conda' is not recognized as an internal or external command, operable program or batch file.
 
 then is required conda instalation !
 
 ### Conda Instalation
 Copy-Paste the following comand
-```
+```sh
 powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -OutFile ~\miniconda.exe && start /B /WAIT %UserProfile%\miniconda.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\miniconda3 && del %UserProfile%\miniconda.exe 
 
 ```
@@ -101,31 +104,26 @@ powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/
 
 ## Install Descraper
 Copy-Paste the following comands 
-```
+```cmd
+cd %UserProfile%\Desota\Desota_Models\DeScraper
 git clone https://github.com/franciscomvargas/descraper.git .
-%UserProfile%\miniconda3\condabin\activate 
-conda deactivate 
-conda create --prefix ./env python=3.11 -y
-conda activate ./env 
-conda install -y pip
-echo "yes" | pip install -r requirements.txt
+%UserProfile%\miniconda3\condabin\conda create --prefix ./env python=3.11 -y
+%UserProfile%\miniconda3\condabin\conda activate ./env
+pip install -r requirements.txt
 echo DONE (:
 
 ```
 
 ## Run Model
 ### Start API server (win)
-> Re-Open the command prompt (CMD)
-
 Copy-Paste the following comands
-```
-cd %UserProfile%\Desota_Models\DeScraper
-%UserProfile%\miniconda3\condabin\activate 
-conda deactivate 
-conda activate ./env 
+```cmd
+cd %UserProfile%\Desota\Desota_Models\DeScraper
+%UserProfile%\miniconda3\condabin\conda activate ./env 
 python cli.py ui --port 8880
 
 ```
+
 ## Open UI in Browser
 Search in the browser
 ```
@@ -135,12 +133,16 @@ http://127.0.0.1:8880/
 ### Consideration
 Some functionalities of this model require to run in paralel with neuralqa! 
 > Take a look at [my neuralqa instalation repo](https://github.com/franciscomvargas/neuralqa)
+</details>
 
 
-# Credits / Lincense - Trafilatura
-## Citation
-```
-@inproceedings{barbaresi-2021-trafilatura,
+<details>
+  <summary><h1>Credits / Lincense - Trafilatura</h1></summary>
+  
+## Trafilatura Details
+```js
+@inproceedings{
+  barbaresi-2021-trafilatura,
   title = {{Trafilatura: A Web Scraping Library and Command-Line Tool for Text Discovery and Extraction}},
   author = "Barbaresi, Adrien",
   booktitle = "Proceedings of the Joint Conference of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing: System Demonstrations",
@@ -152,4 +154,5 @@ Some functionalities of this model require to run in paralel with neuralqa!
 ```
 ## Licence
 [GPL-3.0 license](https://github.com/adbar/trafilatura/blob/master/LICENSE)
+</details>
 
