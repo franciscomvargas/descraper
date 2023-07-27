@@ -1,5 +1,6 @@
-<details>
-  <summary><h1>About DeScraper</h1></summary>
+# About DeScraper
+
+![UI Show Off](Descraper_UI_ShowOff.PNG)
 
 ## Description
 This project purpose is:
@@ -7,11 +8,20 @@ This project purpose is:
  - Generate HTML tables in Excel and/or CSV format with pandas.read_html.
 
 ## How it works
-After instalation of this repository ([Windows](#windows-instalation)) and [NeuralQA](https://github.com/franciscomvargas/neuralqa) make your first request:
+After:
+  - Install:
+    - DeScraper ([Windows](#windows));
+    - NeuralQA ([Windows](https://github.com/franciscomvargas/neuralqa#windows-instalation) | [Linux](https://github.com/franciscomvargas/neuralqa#linux-instalation)).
 
- - Begin by starting the API server ([Windows](#start-api-server-win))
+  - Start API Servers:
+    - DeScraper ([Windows](#start-api-server));
+    - NeuralQA ([Windows](https://github.com/franciscomvargas/neuralqa#start-api-server) | [Linux](https://github.com/franciscomvargas/neuralqa#start-api-server-1)).
+  
+Make your first request:
 
-### By POST Request
+<details>
+  <summary><b>By POST Request</b></summary>
+
 You can use any programing language to make this request, I will use Python to ilustrate how you can do it:
 ```python
 import requests
@@ -45,10 +55,13 @@ print(response.json())
 |excel|bolean|&check;|Generate Excel File with webpage tables|
 |csv|bolean|&check;|Generate CSV Files with webpage tables|
 |overwrite_files|bolean|&check;|DeScraper stores locally the scraped HTML pages and the Generated Tables, therefore, everytime you re-request the same URL you can overwrite the files switching ON this parameter (for example if the webpage has been updated)|
+</details>
 
-### By User Interface
+<details>
+  <summary><b>By User Interface</b></summary>
+
  - [Open UI in the browser](#open-ui-in-browser)
- - Fill with payload parameters:
+ - Fill with [payload](#payload-explanation) parameters:
 
 ![UI Payload Explanation](UI_payload_explanation.png)
 
@@ -62,13 +75,12 @@ print(response.json())
    ![UI Expand Queries](Descraper_UI_ExpandQuery.PNG)
    3. Finally when you press "Initiate DeScraper" the selected candidates will be added to the post request as `expansionterms`:
    ![Request With Expansion Terms](Descraper_UI_PayloadW_expansionterms.PNG)
-
 </details>
 
-
 <details>
-  <summary><h1>Windows Instalation</h1></summary>
-  
+  <summary><h1>Instalation</h1></summary>
+
+# Windows
 ## Create Project Folder 
 ***Model PATH:*** %UserProfile%\Desota\Desota_Models\DeScraper
 
@@ -115,7 +127,7 @@ echo DONE (:
 ```
 
 ## Run Model
-### Start API server (win)
+### Start API server
 Copy-Paste the following comands
 ```cmd
 cd %UserProfile%\Desota\Desota_Models\DeScraper
@@ -137,10 +149,10 @@ Some functionalities of this model require to run in paralel with neuralqa!
 
 
 <details>
-  <summary><h1>Credits / Lincense - Trafilatura</h1></summary>
+  <summary><h1>Credits / Lincense</h1></summary>
   
-## Trafilatura Details
-```js
+## [Trafilatura](https://github.com/adbar/trafilatura/blob/master/LICENSE)
+```sh
 @inproceedings{
   barbaresi-2021-trafilatura,
   title = {{Trafilatura: A Web Scraping Library and Command-Line Tool for Text Discovery and Extraction}},
@@ -152,7 +164,17 @@ Some functionalities of this model require to run in paralel with neuralqa!
   year = 2021,
 }
 ```
-## Licence
-[GPL-3.0 license](https://github.com/adbar/trafilatura/blob/master/LICENSE)
+
+
+## [NeuralQA](https://github.com/victordibia/neuralqa/blob/master/LICENSE)
+```sh
+@article{
+  dibia2020neuralqa,
+  title={NeuralQA: A Usable Library for Question Answering (Contextual Query Expansion + BERT) on Large Datasets},
+  author={Victor Dibia},
+  year={2020},
+  journal={Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP): System Demonstrations}
+}
+```
 </details>
 
