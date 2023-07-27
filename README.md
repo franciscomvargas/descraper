@@ -37,8 +37,8 @@ payload = {
     "qa_port": 8888,
     "expansionterms": [],
     "excel": True,
-    "csv": True
-    "overwrite_files": False,
+    "csv": True,
+    "overwrite_files": False
 }
 
 response = requests.request("POST", descraper_url, json=payload)
@@ -82,9 +82,13 @@ print(response.json())
 
  - Try it out:
    1. When Query is filled with a array of strings press the "Expand Queries" button;
-   2. Select the candidates that best fit your queries;
+
+   2. Select the candidates that best fit your queries:
+
    ![UI Expand Queries](Descraper_UI_ExpandQuery.PNG)
+   
    3. Finally when you press "Initiate DeScraper" the selected candidates will be added to the post request as `expansionterms`:
+
    ![Request With Expansion Terms](Descraper_UI_PayloadW_expansionterms.PNG)
 </details>
 
@@ -92,7 +96,7 @@ print(response.json())
 <details>
   <summary><h2>Windows</h2></summary>
 
-## Create Project Folder 
+### Create Project Folder 
 ***Model PATH:*** %UserProfile%\Desota\Desota_Models\DeScraper
 
 * Go to CMD (command prompt):
@@ -106,7 +110,7 @@ cd %UserProfile%\Desota\Desota_Models\DeScraper
 
 ```
 
-## Test if conda is instaled
+### Test if conda is instaled
 
 Copy-Paste the following comands 
 ```cmd
@@ -115,9 +119,9 @@ Copy-Paste the following comands
 if response is:
 >  '`YourUserPath`\miniconda3\condabin\conda' is not recognized as an internal or external command, operable program or batch file.
 
-then is required conda instalation !
+then is required to install conda!
 
-### Conda Instalation
+### Install Conda
 Copy-Paste the following comand
 ```sh
 powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -OutFile ~\miniconda.exe && start /B /WAIT %UserProfile%\miniconda.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\miniconda3 && del %UserProfile%\miniconda.exe 
@@ -125,7 +129,7 @@ powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/
 ```
 
 
-## Install Descraper
+### Install Descraper
 Copy-Paste the following comands 
 ```cmd
 cd %UserProfile%\Desota\Desota_Models\DeScraper
@@ -142,7 +146,7 @@ echo DONE (:
 <details>
   <summary><h2>Windows</h2></summary>
 
-## Start API server
+### Start API server
 * Go to CMD (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
   * Search: `cmd` 
@@ -154,7 +158,7 @@ cd %UserProfile%\Desota\Desota_Models\DeScraper
 python cli.py ui --port 8880
 
 ```
-## Open UI in Browser
+### Open UI in Browser
 Search in the browser
 ```
 http://127.0.0.1:8880/
