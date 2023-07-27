@@ -4,6 +4,7 @@ from scraper.webscraper import *
 from question_answer.qa import *
 import time
 from http.client import responses
+import json
 
 # class Scrape(BaseModel):
 #     url: str = "https://en.wikipedia.org/wiki/The_Simpsons"
@@ -44,6 +45,17 @@ class Handler:
         async def get_scraper(params: Scrape):
             response = {}
             start_time = time.time()
+            print_params = {
+                'url': params.url,
+                'query': params.query,
+                'html_text': params.html_text,
+                'qa_port': params.qa_port,
+                'expansionterms': params.expansionterms,
+                'overwrite_files': params.overwrite_files,
+                'excel': params.excel,
+                'csv': params.csv
+            }
+            print(f"Incoming request Payload:\n{json.dumps(print_params, indent=2)}")
             if params.url == "":
                 return{
                     "error": "DeScraper Input Params failure: Required `url`",
@@ -61,7 +73,7 @@ class Handler:
             
             response["html"] = scraper_res['html_file'] # The html file path is allways returned
             
-            if params.html_text:            # RUN Trafilatura Result
+            if params.html_text:            # RUN Trafilatura HTML2TXT
                 response["html_text"] = run_trafilatura(scraper_res['html_file'])
 
             if isinstance(params.query, list) and len(params.query) > 0:                   # RUN NeuraQA
