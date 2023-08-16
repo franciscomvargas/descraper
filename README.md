@@ -1,6 +1,6 @@
-# About DeScraper
+# About DeScraperadme-imgs
 
-![UI Show Off](Descraper_UI_ShowOff.PNG)
+![UI Show Off](readme-imgs/Descraper_UI_ShowOff.PNG)
 
 ## Description
 This project purpose is:
@@ -54,7 +54,7 @@ print(response.json())
  - [Open UI in the browser](#run)
  - Fill with [payload](#documentation) parameters:
 
-![UI Payload Explanation](UI_payload_explanation.png)
+![UI Payload Explanation](readme-imgs/UI_payload_explanation.png)
 
 </details>
 
@@ -85,85 +85,50 @@ print(response.json())
 
    2. Select the candidates that best fit your queries:
 
-   ![UI Expand Queries](Descraper_UI_ExpandQuery.PNG)
+   ![UI Expand Queries](readme-imgs/Descraper_UI_ExpandQuery.PNG)
    
    3. Finally when you press "Initiate DeScraper" the selected candidates will be added to the post request as `expansionterms`:
 
-   ![Request With Expansion Terms](Descraper_UI_PayloadW_expansionterms.PNG)
+   ![Request With Expansion Terms](readme-imgs/Descraper_UI_PayloadW_expansionterms.PNG)
 </details>
+
 
 # Instalation
 <details>
-  <summary><h2>Windows</h2></summary>
-
-### Create Project Folder 
-***Model PATH:*** %UserProfile%\Desota\Desota_Models\DeScraper
+    <summary><h2>Windows</h2></summary>
 
 * Go to CMD (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
   * Search: `cmd` 
+  * <kbd>Ctrl</kbd> + <kbd>⇧ Shift</kbd> + <kbd>↵ Enter</kbd>
 
 * Copy-Paste the following comands: 
-```cmd
-mkdir %UserProfile%\Desota\Desota_Models\DeScraper
-cd %UserProfile%\Desota\Desota_Models\DeScraper
+    ```cmd
+    powershell -command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/franciscomvargas/descraper/main/executables/Windows/descraper.install.install.bat -OutFile ~\descraper_installer.bat"
+    %UserProfile%\descraper_installer.bat && del %UserProfile%\descraper_installer.bat
 
-```
-
-### Test if conda is instaled
-
-Copy-Paste the following comands 
-```cmd
-%UserProfile%\miniconda3\condabin\conda --version
-```
-if response is:
->  '`YourUserPath`\miniconda3\condabin\conda' is not recognized as an internal or external command, operable program or batch file.
-
-then is required to install conda!
-
-### Install Conda
-Copy-Paste the following comand
-```sh
-powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -OutFile ~\miniconda.exe && start /B /WAIT %UserProfile%\miniconda.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\miniconda3 && del %UserProfile%\miniconda.exe 
-
-```
-
-
-### Install Descraper
-Copy-Paste the following comands 
-```cmd
-cd %UserProfile%\Desota\Desota_Models\DeScraper
-git clone https://github.com/franciscomvargas/descraper.git .
-%UserProfile%\miniconda3\condabin\conda create --prefix ./env python=3.11 -y
-%UserProfile%\miniconda3\condabin\conda activate ./env
-pip install -r requirements.txt
-echo DONE (:
-
-```
+    ```
 </details>
 
 # Run
 <details>
-  <summary><h2>Windows</h2></summary>
+    <summary><h2>Windows</h2></summary>
 
-### Start API server
 * Go to CMD (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
   * Search: `cmd` 
+  * <kbd>Ctrl</kbd> + <kbd>⇧ Shift</kbd> + <kbd>↵ Enter</kbd>
 
 * Copy-Paste the following comands: 
-```cmd
-cd %UserProfile%\Desota\Desota_Models\DeScraper
-%UserProfile%\miniconda3\condabin\conda activate ./env 
-python cli.py ui --port 8880
+    ```cmd
+    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.run.bat
 
-```
+    ```
+
 ### Open UI in Browser
-Search in the browser
-```
-http://127.0.0.1:8880/
-```
+  Search for [Deescraper](http://127.0.0.1:8880/)
 </details>
+
 
 # Credits / Lincense
   
