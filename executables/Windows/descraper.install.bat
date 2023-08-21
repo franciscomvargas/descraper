@@ -37,10 +37,10 @@ IF %2 EQU %arg1% (
     GOTO reinstall
 )
 :noreinstallargs
-start /B /WAIT %model_uninstall%
+call %model_uninstall%
 GOTO endofreinstall
 :reinstall
-start /B /WAIT %model_uninstall% /Q
+call %model_uninstall% /Q
 :endofreinstall
 IF EXIST %model_path% echo Re-Instalation Required && GOTO EOF_IN
 
@@ -118,7 +118,6 @@ IF %2 EQU %arg2% (
 @REM IF /I "%STARTMODEL%" NEQ "Y" GOTO startmodel
 @REM IF /I "%STARTMODEL%" NEQ "y" GOTO startmodel
 @REM IF /I "%STARTMODEL%" NEQ "yes" GOTO startmodel
-@REM call echo Instalation Completed!!
 GOTO EOF_IN
 
 :startmodel
@@ -126,5 +125,6 @@ start /B /WAIT %model_start%
 call echo Model [ %model_service_name% ] - Started!
 
 :EOF_IN
+call echo Instalation Completed!!
 call timeout 30
 exit

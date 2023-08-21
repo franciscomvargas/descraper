@@ -36,10 +36,8 @@ call %nssm_exe% set %service_name% DisplayName %model_name%
 call %nssm_exe% set %service_name% Description %model_desc%
 call %nssm_exe% set %service_name% Start SERVICE_AUTO_START
 @REM Log on tab
-@REM call %nssm_exe% set %service_name% ObjectName LocalSystem
-@REM call %nssm_exe% set %service_name% Type SERVICE_WIN32_OWN_PROCESS
-call %nssm_exe% set %service_name% ObjectName UserSystem
-call %nssm_exe% set %service_name% Type %UserProfile%
+call %nssm_exe% set %service_name% ObjectName LocalSystem
+call %nssm_exe% set %service_name% Type SERVICE_WIN32_OWN_PROCESS
 @REM Dependencies
 call %nssm_exe% set %service_name% DependOnService %model_dependencies%
 
