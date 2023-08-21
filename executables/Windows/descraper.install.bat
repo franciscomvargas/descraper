@@ -42,7 +42,7 @@ GOTO endofreinstall
 :reinstall
 start /B /WAIT %model_uninstall% /Q
 :endofreinstall
-IF EXIST %model_path% echo Re-Instalation Required && GOTO EOF
+IF EXIST %model_path% echo Re-Instalation Required && GOTO EOF_IN
 
 @REM Create Project Folder
 mkdir %model_path%
@@ -105,11 +105,11 @@ start /B /WAIT %model_service_install%
 
 
 @REM Start Model Service?
-IF "%1" EQU "" GOTO EOF
+IF "%1" EQU "" GOTO EOF_IN
 IF %1 EQU %arg2% (
     GOTO startmodel
 )
-IF "%2" EQU "" GOTO EOF
+IF "%2" EQU "" GOTO EOF_IN
 IF %2 EQU %arg2% (
     GOTO startmodel
 )
@@ -119,12 +119,12 @@ IF %2 EQU %arg2% (
 @REM IF /I "%STARTMODEL%" NEQ "y" GOTO startmodel
 @REM IF /I "%STARTMODEL%" NEQ "yes" GOTO startmodel
 @REM call echo Instalation Completed!!
-GOTO EOF
+GOTO EOF_IN
 
 :startmodel
 start /B /WAIT %model_start%
 call echo Model [ %model_service_name% ] - Started!
 
-:EOF
+:EOF_IN
 call timeout 30
 exit

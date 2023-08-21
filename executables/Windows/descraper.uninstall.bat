@@ -22,7 +22,7 @@ IF %1 EQU /Q (
     call %nssm_exe% remove %service_name% confirm
     @REM Delete Project Folder
     IF EXIST %model_path% rmdir /S /Q %model_path%
-    GOTO EOF
+    GOTO EOF_UN
 )
 :noargs
 @REM Delete Model Service - retrieved from https://nssm.cc/commands
@@ -32,7 +32,7 @@ call %nssm_exe% remove %service_name%
 IF EXIST %model_path% rmdir /S %model_path%
 
 
-:EOF
+:EOF_UN
 @REM Inform Uninstall Completed
 call %nssm_exe% status %service_name%
 IF NOT EXIST %model_path% echo Algoz Uninstaled!
