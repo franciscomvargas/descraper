@@ -21,6 +21,10 @@ class Handler:
         router = APIRouter()
         self.router = router
 
+        @router.get("/handshake")
+        async def get_handshake():
+            return{"status":"ready"}
+        
         @router.post("/expand")
         async def get_expansion(params: Expansion):
             """Return  an expansion for a given query

@@ -1,13 +1,15 @@
+@REM - Model Path
+set model_path=%UserProfile%\DeSOTA\Desota_Models\DeScraper
 @REM Service VARS
 @REM retrieved from https://nssm.cc/usage
 set model_name=Desota/Descraper
 set service_name=descraper_service
-set model_exe=%UserProfile%\DeSOTA\Desota_Models\DeScraper\executables\Windows\descraper.service.bat
-set exe_path=%UserProfile%\DeSOTA\Desota_Models\DeScraper\executables\Windows
+set model_exe=%model_path%\executables\Windows\descraper.service.bat
+set exe_path=%model_path%\executables\Windows
 set model_exe_args=
 set model_desc=
 set model_dependencies=
-set model_log=%UserProfile%\DeSOTA\Desota_Models\DeScraper\service.log
+set model_log=%model_path%\service.log
 set model_env=
 
 
