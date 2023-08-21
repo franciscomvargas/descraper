@@ -1,4 +1,4 @@
-# About DeScraperadme-imgs
+# About DeScraper
 
 ![UI Show Off](readme-imgs/Descraper_UI_ShowOff.PNG)
 
@@ -8,14 +8,14 @@ This project purpose is:
  - Generate HTML tables in Excel and/or CSV format with pandas.read_html.
 
 ## How it works
-### After:
+### First Steps:
   - Install:
     - [DeScraper](#instalation);
     - [NeuralQA](https://github.com/franciscomvargas/neuralqa#instalation).
 
-  - Start API Servers:
-    - [DeScraper](#run);
-    - [NeuralQA](https://github.com/franciscomvargas/neuralqa#run).
+  - Start Services:
+    - [DeScraper](#service-operations);
+    - [NeuralQA](https://github.com/franciscomvargas/neuralqa#service-operations).
   
 ### Make your first request:
 
@@ -51,7 +51,7 @@ print(response.json())
 <details>
   <summary>By User Interface</summary>
 
- - [Open UI in the browser](#run)
+ - Click [here](http://127.0.0.1:8880/) to search for Descraper!
  - Fill with [payload](#documentation) parameters:
 
 ![UI Payload Explanation](readme-imgs/UI_payload_explanation.png)
@@ -92,25 +92,81 @@ print(response.json())
    ![Request With Expansion Terms](readme-imgs/Descraper_UI_PayloadW_expansionterms.PNG)
 </details>
 
-
 # Instalation
 <details>
     <summary><h2>Windows</h2></summary>
 
-* Go to CMD (command prompt):
+* Go to CMD as Administrator (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
   * Search: `cmd` 
   * <kbd>Ctrl</kbd> + <kbd>⇧ Shift</kbd> + <kbd>↵ Enter</kbd>
 
 * Copy-Paste the following comands: 
     ```cmd
-    powershell -command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/franciscomvargas/descraper/main/executables/Windows/descraper.install.install.bat -OutFile ~\descraper_installer.bat"
+    powershell -command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/franciscomvargas/descraper/main/executables/Windows/descraper.install.bat -OutFile ~\descraper_installer.bat"
     %UserProfile%\descraper_installer.bat && del %UserProfile%\descraper_installer.bat
+
+    ```
+    * Installer Optional `<Arguments>`
+    
+      <table>
+          <thead>
+              <tr>
+                  <th>arg</th>
+                  <th>Description</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td rowspan=3>/reinstall</td>
+                  <td>Overwrite project when re-installing</td>
+              </tr>
+              <tr>
+                  <td>Delete project service when re-installing</td>
+              </tr>
+              <tr>
+                  <td>Install without requiring user interaction</td>
+              </tr>
+              <tr>
+                  <td>/startmodel</td>
+                  <td>Start project service on instalation</td>
+              </tr>
+          </tbody>
+      </table>
+      
+      ```cmd
+      powershell -command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/franciscomvargas/descraper/main/executables/Windows/descraper.install.bat -OutFile ~\descraper_installer.bat"
+      %UserProfile%\descraper_installer.bat <Arguments> && del %UserProfile%\descraper_installer.bat
+
+      ```
+    
+    
+</details>
+
+# Service Operations
+<details>
+    <summary><h2>Windows</h2></summary>
+
+* Go to CMD (command prompt):
+  * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
+  * Search: `cmd` 
+  * <kbd>Ctrl</kbd> + <kbd>⇧ Shift</kbd> + <kbd>↵ Enter</kbd>
+
+### Start Service
+* Copy-Paste the following comands: 
+    ```cmd
+    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.start.bat
+
+    ```
+### Stop Service
+* Copy-Paste the following comands: 
+    ```cmd
+    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.stop.bat
 
     ```
 </details>
 
-# Run
+# Uninstalation
 <details>
     <summary><h2>Windows</h2></summary>
 
@@ -121,14 +177,21 @@ print(response.json())
 
 * Copy-Paste the following comands: 
     ```cmd
-    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.run.bat
+    UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.uninstall.bat
 
     ```
+    * Uninstaller Optional `<Arguments>`
 
-### Open UI in Browser
-  Search for [Deescraper](http://127.0.0.1:8880/)
+      |arg|Description|
+      |---|---|
+      |/Q|Uninstall without requiring user interaction|
+
+      ```cmd
+      UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.uninstall.bat <Arguments>
+
+      ```
+      
 </details>
-
 
 # Credits / Lincense
   
