@@ -12,7 +12,7 @@ set model_env=
 
 
 
-@REM -- Edit bellow if you're felling lucky ;) --
+@REM -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
 @REM NSSM - the Non-Sucking Service Manager 
 IF EXIST %UserProfile%\Desota\Portables\nssm goto endofnssm 
@@ -70,7 +70,7 @@ call %nssm_exe% set %service_name% AppRotateBytes 1048576
 call %nssm_exe% set %service_name% AppEnvironmentExtra %model_env%
 
 @REM EOF
-@REM Stop service - Prevent start on install
+@REM Stop service - Prevent start on install - retrieved from https://nssm.cc/commands
 call %nssm_exe% stop %service_name%
 call timeout 5
 call exit
