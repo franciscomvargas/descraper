@@ -155,13 +155,13 @@ print(response.json())
 ### Start Service
 * Copy-Paste the following comands: 
     ```cmd
-    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.start.bat
+    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.start.bat
 
     ```
 ### Stop Service
 * Copy-Paste the following comands: 
     ```cmd
-    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.stop.bat
+    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.stop.bat
 
     ```
 </details>
@@ -177,7 +177,7 @@ print(response.json())
 
 * Copy-Paste the following comands: 
     ```cmd
-    UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.uninstall.bat
+    %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.uninstall.bat
 
     ```
     * Uninstaller Optional `<Arguments>`
@@ -187,7 +187,7 @@ print(response.json())
       |/Q|Uninstall without requiring user interaction|
 
       ```cmd
-      UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\derruner.uninstall.bat <Arguments>
+      %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.uninstall.bat <Arguments>
 
       ```
       
