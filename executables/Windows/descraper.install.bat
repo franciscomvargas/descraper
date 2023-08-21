@@ -37,10 +37,10 @@ IF %2 EQU %arg1% (
     GOTO reinstall
 )
 :noreinstallargs
-call %model_uninstall%
+start /B /WAIT %model_uninstall%
 GOTO endofreinstall
 :reinstall
-call %model_uninstall% /Q
+start /B /WAIT %model_uninstall% /Q
 :endofreinstall
 IF EXIST %model_path% echo Re-Instalation Required && GOTO EOF
 
@@ -100,7 +100,7 @@ call pip install -r requirements.txt
 
 
 @REM Install Service - NSSM  - the Non-Sucking Service Manager
-call %model_service_install%
+start /B /WAIT %model_service_install%
 
 
 
@@ -122,9 +122,9 @@ IF %2 EQU %arg2% (
 GOTO EOF
 
 :startmodel
-call %model_start%
+start /B /WAIT %model_start%
 call echo Model [ %model_service_name% ] - Started!
 
 :EOF
-call timeout 5
-call exit
+call timeout 30
+exit

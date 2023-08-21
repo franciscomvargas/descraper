@@ -72,5 +72,4 @@ call %nssm_exe% set %service_name% AppEnvironmentExtra %model_env%
 @REM EOF
 @REM Stop service - Prevent start on install - retrieved from https://nssm.cc/commands
 call %nssm_exe% stop %service_name%
-call timeout 5
-call exit
+exit

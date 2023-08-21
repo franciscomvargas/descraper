@@ -14,5 +14,4 @@ call %nssm_exe% stop %service_name%
 
 @REM EOF
 call %nssm_exe% status %service_name%
-call timeout 5
-call exit
+exit

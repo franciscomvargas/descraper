@@ -36,5 +36,4 @@ IF EXIST %model_path% rmdir /S %model_path%
 @REM Inform Uninstall Completed
 call %nssm_exe% status %service_name%
 IF NOT EXIST %model_path% echo Algoz Uninstaled!
-call timeout 5
-call exit
+exit
