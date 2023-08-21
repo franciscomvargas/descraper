@@ -54,13 +54,16 @@ python --version 3>NUL
 IF errorlevel 1 (
     python3 --version 3>NUL
     IF errorlevel 1 (
-        goto :installpython
+        IF NOT EXIST %UserProfile%\Desota\Portables\python3 (
+            GOTO installpython
+        )
     )
 )
 goto :skipinstallpython
 :installpython
-IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %python64% -OutFile ~\python3_installer.exe" && start /B /WAIT %UserProfile%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%UserProfile%\python3_11_4 && del %UserProfile%\python3_installer.exe && goto :skipinstallpython
-IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %python32% -OutFile ~\python3_installer.exe" && start /B /WAIT %UserProfile%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%UserProfile%\python3_11_4 && del %UserProfile%\python3_installer.exe && goto :skipinstallpython
+call mkdir %UserProfile%\Desota\Portables
+IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %python64% -OutFile ~\python3_installer.exe" && start /B /WAIT %UserProfile%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%UserProfile%\Desota\Portables\python3 && del %UserProfile%\python3_installer.exe && goto :skipinstallpython
+IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %python32% -OutFile ~\python3_installer.exe" && start /B /WAIT %UserProfile%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%UserProfile%\Desota\Portables\python3 && del %UserProfile%\python3_installer.exe && goto :skipinstallpython
 :skipinstallpython
 
 @REM GIT MODEL CLONE
