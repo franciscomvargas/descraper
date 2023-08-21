@@ -26,5 +26,4 @@ IF '%service_res%' NEQ '%shake_respose%' (
 
 @REM EOF
 call %nssm_exe% status %service_name%
-@REM exit
-PAUSE
+exit
