@@ -107,7 +107,7 @@ print(response.json())
     %UserProfile%\descraper_installer.bat && del %UserProfile%\descraper_installer.bat
 
     ```
-    * Installer Optional `<Arguments>`
+    * Installer Optional `Arguments`
     
       <table>
           <thead>
@@ -136,7 +136,7 @@ print(response.json())
       
       ```cmd
       powershell -command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/franciscomvargas/descraper/main/executables/Windows/descraper.install.bat -OutFile ~\descraper_installer.bat"
-      %UserProfile%\descraper_installer.bat <Arguments> && del %UserProfile%\descraper_installer.bat
+      %UserProfile%\descraper_installer.bat /reinstall /startmodel && del %UserProfile%\descraper_installer.bat
 
       ```
     
@@ -180,14 +180,14 @@ print(response.json())
     %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.uninstall.bat
 
     ```
-    * Uninstaller Optional `<Arguments>`
+    * Uninstaller Optional `Arguments`
 
       |arg|Description|
       |---|---|
       |/Q|Uninstall without requiring user interaction|
 
       ```cmd
-      %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.uninstall.bat <Arguments>
+      %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.uninstall.bat /Q
 
       ```
       
