@@ -83,17 +83,18 @@ call %UserProfile%\Desota\Portables\PortableGit\bin\git.exe clone --branch %mode
 
 
 @REM Install Conda if Required
-IF NOT EXIST %UserProfile%\miniconda3\condabin\conda.bat goto :installminiconda
+call mkdir %UserProfile%\Desota\Portables
+IF NOT EXIST %UserProfile%\Desota\Portables\miniconda3\condabin\conda.bat goto :installminiconda
 goto :skipinstallminiconda
 :installminiconda
-IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %miniconda64% -OutFile %UserProfile%\miniconda_installer.exe" && start /B /WAIT %UserProfile%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\miniconda3 && del %UserProfile%\miniconda_installer.exe && goto :skipinstallgit
-IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %miniconda32% -OutFile %UserProfile%\miniconda_installer.exe" && start /B /WAIT %UserProfile%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\miniconda3 && del %UserProfile%\miniconda_installer.exe && && goto :skipinstallgit
+IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %miniconda64% -OutFile %UserProfile%\miniconda_installer.exe" && start /B /WAIT %UserProfile%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\Desota\Portables\miniconda3 && del %UserProfile%\miniconda_installer.exe && goto :skipinstallgit
+IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %miniconda32% -OutFile %UserProfile%\miniconda_installer.exe" && start /B /WAIT %UserProfile%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\Desota\Portables\miniconda3 && del %UserProfile%\miniconda_installer.exe && && goto :skipinstallgit
 :skipinstallminiconda
 
 
 @REM Create/Activate Conda Virtual Environment
-call %UserProfile%\miniconda3\condabin\conda create --prefix ./env python=3.11 -y
-call %UserProfile%\miniconda3\condabin\conda activate ./env
+call %UserProfile%\Desota\Portables\miniconda3\condabin\conda create --prefix ./env python=3.11 -y
+call %UserProfile%\Desota\Portables\miniconda3\condabin\conda activate ./env
 
 @REM Install required Libraries
 call pip install -r requirements.txt
