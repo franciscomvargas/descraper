@@ -62,7 +62,7 @@ call %nssm_exe% install %service_name% %model_exe% %exe_path% >NUL 2>NUL
 call %nssm_exe% set %service_name% AppDirectory %exe_path% >NUL 2>NUL
 call %nssm_exe% set %service_name% AppParameters server >NUL 2>NUL
 :: Details tab
-call %nssm_exe% set %service_name% DisplayName Desota/%model_name% >NUL 2>NUL
+call %nssm_exe% set %service_name% DisplayName %model_name% >NUL 2>NUL
 call %nssm_exe% set %service_name% Description %model_desc% >NUL 2>NUL
 call %nssm_exe% set %service_name% Start SERVICE_AUTO_START >NUL 2>NUL
 :: Log on tab
