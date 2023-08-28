@@ -53,7 +53,6 @@ set ansi_end=%ESC%[0m
 
 ECHO %header%Welcome to DeScraper Installer!%ansi_end%
 
-ECHO %info_h1%Step 1/7 - Check Re-Instalation%ansi_end%
 :: Re-instalation Check
 ECHO %info_h1%Step 1/7 - Check Re-Instalation%ansi_end%
 IF NOT EXIST %model_path% (
@@ -111,19 +110,18 @@ IF NOT errorlevel 1 (
     ::  Clone Descraper Repository
     ECHO %info_h2%Cloning Project Repository...%ansi_end%
     call git clone --branch %model_git_branch% %model_git% . >NUL 2>NUL
-    GOTO endgitclonemodel
+) ELSE (
+    :: PORTABLE GIT MODEL CLONE
+    :: Install Portable Git
+    call mkdir %UserProfile%\Desota\Portables
+    IF EXIST %UserProfile%\Desota\Portables\PortableGit GOTO clonerep
+    :: Install Portable Git
+    %info_h2%Downloading Portable Git...%ansi_end%
+    IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %git64_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" -y && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
+    IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %git32_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
+    :clonerep
+    call %UserProfile%\Desota\Portables\PortableGit\bin\git.exe clone --branch %model_git_branch% %model_git% . >NUL 2>NUL
 )
-:: PORTABLE GIT MODEL CLONE
-:: Install Portable Git
-call mkdir %UserProfile%\Desota\Portables
-IF EXIST %UserProfile%\Desota\Portables\PortableGit GOTO clonerep
-:: Install Portable Git
-%info_h2%Downloading Portable Git...%ansi_end%
-IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %git64_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" -y && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
-IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %git32_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
-:clonerep
-call %UserProfile%\Desota\Portables\PortableGit\bin\git.exe clone --branch %model_git_branch% %model_git% . >NUL 2>NUL
-:endgitclonemodel
 
 
 :: Install Conda if Required
