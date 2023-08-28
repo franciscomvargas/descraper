@@ -110,8 +110,8 @@ git --version >NUL 2>NUL
 IF NOT errorlevel 1 (
     ::  Clone Descraper Repository
     ECHO %info_h2%Cloning Project Repository...%ansi_end%
-    call git clone --branch %model_git_branch% %model_git% .
-    GOTO endgitclonemodel_des
+    call git clone --branch %model_git_branch% %model_git% . >NUL 2>NUL
+    GOTO endgitclonemodel
 )
 :: PORTABLE GIT MODEL CLONE
 :: Install Portable Git
@@ -122,13 +122,13 @@ IF EXIST %UserProfile%\Desota\Portables\PortableGit GOTO clonerep
 IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %git64_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" -y && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
 IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %git32_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
 :clonerep
-call %UserProfile%\Desota\Portables\PortableGit\bin\git.exe clone --branch %model_git_branch% %model_git% .
-:endgitclonemodel_des
+call %UserProfile%\Desota\Portables\PortableGit\bin\git.exe clone --branch %model_git_branch% %model_git% . >NUL 2>NUL
+:endgitclonemodel
 
 
 :: Install Conda if Required
 ECHO %info_h1%Step 5/7 - Create Virtual Environment for Project%ansi_end%
-call mkdir %UserProfile%\Desota\Portables
+call mkdir %UserProfile%\Desota\Portables >NUL 2>NUL
 IF NOT EXIST %UserProfile%\Desota\Portables\miniconda3\condabin\conda.bat goto installminiconda
 goto skipinstallminiconda
 :installminiconda
