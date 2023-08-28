@@ -51,6 +51,9 @@ set fail=%ESC%[7;31m
 set ansi_end=%ESC%[0m
 :end_ansi_colors
 
+ECHO %header%Welcome to DeScraper Installer!%ansi_end%
+
+ECHO %info_h1%Step 1/7 - Check Re-Instalation%ansi_end%
 :: Re-instalation Check
 ECHO %info_h1%Step 1/7 - Check Re-Instalation%ansi_end%
 IF NOT EXIST %model_path% (
@@ -108,7 +111,7 @@ IF NOT errorlevel 1 (
     ::  Clone Descraper Repository
     ECHO %info_h2%Cloning Project Repository...%ansi_end%
     call git clone --branch %model_git_branch% %model_git% .
-    GOTO endgitclonemodel
+    GOTO endgitclonemodel_des
 )
 :: PORTABLE GIT MODEL CLONE
 :: Install Portable Git
@@ -120,7 +123,7 @@ IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %
 IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %git32_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
 :clonerep
 call %UserProfile%\Desota\Portables\PortableGit\bin\git.exe clone --branch %model_git_branch% %model_git% .
-:endgitclonemodel
+:endgitclonemodel_des
 
 
 :: Install Conda if Required
