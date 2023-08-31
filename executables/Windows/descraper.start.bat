@@ -36,7 +36,9 @@ IF %PROCESSOR_ARCHITECTURE%==AMD64 set nssm_exe=%UserProfile%\Desota\Portables\n
 IF %PROCESSOR_ARCHITECTURE%==x86 set nssm_exe=%UserProfile%\Desota\Portables\nssm\win32\nssm.exe
 
 :: Start service - retrieved from https://nssm.cc/commands
-ECHO %info_h2%Starting Service `%service_name%`...%ansi_end% 
+ECHO %info_h2%Starting Service...%ansi_end% 
+ECHO     service name: %service_name%
+
 call %nssm_exe% start %service_name% >NUL
 
 :: Wait for Service to be fully started
