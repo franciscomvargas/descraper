@@ -48,7 +48,7 @@ ECHO %info_h2%Waiting for Service handshake...%ansi_end%
 set /p service_res= < %UserProfile%\tmpFile.txt
 del %UserProfile%\tmpFile.txt > NUL 2>NUL
 IF '%service_res%' NEQ '%shake_respose%' (
-    timeout 2 > NUL 2>NUL
+    timeout 1 > NUL 2>NUL
     GOTO waitloop
 )
 

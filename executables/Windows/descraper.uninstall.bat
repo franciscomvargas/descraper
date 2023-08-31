@@ -70,5 +70,8 @@ IF EXIST %model_path% (
 IF EXIST %model_path% (
     ECHO %fail%%model_name% Uninstall Fail%ansi_end%
     PAUSE
+) ELSE (
+    ECHO %sucess%%model_name% Uninstalation Completed!%ansi_end%
+    timeout 1 >NUL 2>NUL
 )
 exit
