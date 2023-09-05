@@ -1,12 +1,15 @@
 @ECHO OFF
 :: Uninstalation VARS
-:: - Model Path
-set model_path=%UserProfile%\Desota\Desota_Models\DeScraper
 set service_name=descraper_service
-set nssm_path=%UserProfile%\Desota\Portables\nssm
 set model_name=Desota/Descraper
 set uninstaller_header=DeScraper Uninstaller - Sad to say goodbye ):
-
+:: - User Path
+:: %~dp0 = C:\users\[user]\Desota\Desota_Models\DeScraper\executables\Windows
+for %%a in ("%~dp0..\..\..\..\..") do set "root_path=%%~fa"
+:: - Model Path
+set model_path=%root_path%\Desota\Desota_Models\DeScraper
+:: - NSSM Path
+set nssm_path=%root_path%\Desota\Portables\nssm
 
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
