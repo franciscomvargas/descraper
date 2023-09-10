@@ -2,7 +2,9 @@ fastapi
 uvicorn
 trafilatura
 httpx
-requests
 pandas[excel]
 html5lib
 beautifulsoup4
+# DeSOTA Packgs
+pyyaml
+requests
