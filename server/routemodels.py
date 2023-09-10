@@ -2,7 +2,9 @@ from pydantic import BaseModel
 from typing import Optional
 
 class Scrape(BaseModel):
-    url: str = "https://en.wikipedia.org/wiki/The_Simpsons"
+    url: Optional[str] = "https://en.wikipedia.org/wiki/The_Simpsons"
+    html: Optional[str] = ""
+    html_encoding: Optional[str] = "utf-8"
     query: Optional[list] = []
     html_text: Optional[bool] = False # Return Trafilatura result
     qa_port: Optional[int] = 8888  # NeuralQA Service port

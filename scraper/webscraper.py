@@ -12,7 +12,7 @@ from trafilatura import extract
 from trafilatura.settings import use_config
 
 # WebScrape html page by URL
-def html_scrape(url, overwrite_files=False):
+def url_scrape(url, overwrite_files=False):
     # Check if url as been allready Scraped
     if not overwrite_files:
         local_html = get_html_file(url)
@@ -80,9 +80,9 @@ def html_scrape(url, overwrite_files=False):
  # https://trafilatura.readthedocs.io/en/latest/installation.html
 #Documentation
  # https://trafilatura.readthedocs.io/en/latest/usage-python.html
-def run_trafilatura(html_file, output_format='txt'):
+def run_trafilatura(html_file, output_format='txt', html_encoding='utf-8'):
     # Get HTML string
-    with open(html_file, 'r', encoding="utf-8") as fr:
+    with open(html_file, 'r', encoding=html_encoding) as fr:
         downloaded = fr.read()
     #Disabling signal
     # A timeout exit during extraction can be turned off if malicious data are not an issue or if you run into an error 
