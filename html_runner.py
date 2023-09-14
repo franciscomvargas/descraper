@@ -94,8 +94,8 @@ def main(args):
     descraper_response = requests.request("POST", descraper_url, json=payload, headers=headers)
 
     descraper_res = descraper_response.json()
-
-    os.remove(html_file)
+    if html_file:
+        os.remove(html_file)
 
     if descraper_response.status_code != 200:
         print(f"[ ERROR ] -> Descraper Request Failed (Info):\n\tResponse Code = {descraper_response.status_code}")
