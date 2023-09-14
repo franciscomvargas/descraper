@@ -5,7 +5,9 @@ set model_git=https://github.com/franciscomvargas/descraper.git
 set model_git_branch=main
 set model_name=Desota/Descraper
 :: - Model Path
-set model_path=%UserProfile%\Desota\Desota_Models\DeScraper
+for %%a in ("%~dp0") do set "user_path=%%~fa"
+for %%a in ("%~dp0\..") do set "path_test=%%~fa"
+set model_path=%user_path%\Desota\Desota_Models\DeScraper
 :: - Service Name
 set model_service_name=descraper_service
 :: - Model Execs
@@ -53,6 +55,18 @@ set ansi_end=%ESC%[0m
 
 ECHO %header%Welcome to %model_name% Installer!%ansi_end%
 
+:: Check Instasller Location - required to be in user path
+IF %path_test% EQU C:\Users GOTO installrootpath_ok
+IF %path_test% EQU C:\users GOTO installrootpath_ok
+IF %path_test% EQU c:\Users GOTO installrootpath_ok
+IF %path_test% EQU c:\users GOTO installrootpath_ok
+
+ECHO %fail%Please move current installer to User PATH (e.g. `C:\Users\[username]`) before instalation! %ansi_end%
+ECHO %info_h2%The Installer will Close%ansi_end%
+PAUSE
+exit
+:installrootpath_ok
+
 :: Re-instalation Check
 ECHO %info_h1%Step 1/7 - Check Re-Instalation%ansi_end%
 IF NOT EXIST %model_path% (
@@ -92,16 +106,16 @@ python --version >NUL 2>NUL
 IF errorlevel 1 (
     python3 --version >NUL 2>NUL
     IF errorlevel 1 (
-        IF NOT EXIST %UserProfile%\Desota\Portables\python3 (
+        IF NOT EXIST %user_path%\Desota\Portables\python3 (
             GOTO installpython
         )
     )
 )
 goto skipinstallpython
 :installpython
-call mkdir %UserProfile%\Desota\Portables
-IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %python64% -OutFile ~\python3_installer.exe" && start /B /WAIT %UserProfile%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%UserProfile%\Desota\Portables\python3 && del %UserProfile%\python3_installer.exe && goto skipinstallpython
-IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %python32% -OutFile ~\python3_installer.exe" && start /B /WAIT %UserProfile%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%UserProfile%\Desota\Portables\python3 && del %UserProfile%\python3_installer.exe && goto skipinstallpython
+call mkdir %user_path%\Desota\Portables
+IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %python64% -OutFile ~\python3_installer.exe" && start /B /WAIT %user_path%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%user_path%\Desota\Portables\python3 && del %user_path%\python3_installer.exe && goto skipinstallpython
+IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %python32% -OutFile ~\python3_installer.exe" && start /B /WAIT %user_path%\python3_installer.exe /quiet InstallAllUsers=0 PrependPath=1 Include_test=0 TargetDir=%user_path%\Desota\Portables\python3 && del %user_path%\python3_installer.exe && goto skipinstallpython
 :skipinstallpython
 
 :: GIT MODEL CLONE
@@ -114,41 +128,41 @@ IF NOT errorlevel 1 (
 ) ELSE (
     :: PORTABLE GIT MODEL CLONE
     :: Install Portable Git
-    call mkdir %UserProfile%\Desota\Portables
-    IF EXIST %UserProfile%\Desota\Portables\PortableGit GOTO clonerep
+    call mkdir %user_path%\Desota\Portables
+    IF EXIST %user_path%\Desota\Portables\PortableGit GOTO clonerep
     :: Install Portable Git
     %info_h2%Downloading Portable Git...%ansi_end%
-    IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %git64_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" -y && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
-    IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %git32_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %UserProfile%\Desota\Portables\git_installer.exe -o"%UserProfile%\Desota\Portables\PortableGit" && del %UserProfile%\Desota\Portables\git_installer.exe && goto clonerep
+    IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %git64_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %user_path%\Desota\Portables\git_installer.exe -o"%user_path%\Desota\Portables\PortableGit" -y && del %user_path%\Desota\Portables\git_installer.exe && goto clonerep
+    IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %git32_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %user_path%\Desota\Portables\git_installer.exe -o"%user_path%\Desota\Portables\PortableGit" && del %user_path%\Desota\Portables\git_installer.exe && goto clonerep
     :clonerep
     ECHO %info_h2%Cloning Project Repository...%ansi_end%
-    call %UserProfile%\Desota\Portables\PortableGit\bin\git.exe clone --branch %model_git_branch% %model_git% . >NUL 2>NUL
+    call %user_path%\Desota\Portables\PortableGit\bin\git.exe clone --branch %model_git_branch% %model_git% . >NUL 2>NUL
 )
 
 
 :: Install Conda if Required
 ECHO %info_h1%Step 5/7 - Create Virtual Environment for Project%ansi_end%
-call mkdir %UserProfile%\Desota\Portables >NUL 2>NUL
-IF NOT EXIST %UserProfile%\Desota\Portables\miniconda3\condabin\conda.bat goto installminiconda
+call mkdir %user_path%\Desota\Portables >NUL 2>NUL
+IF NOT EXIST %user_path%\Desota\Portables\miniconda3\condabin\conda.bat goto installminiconda
 goto skipinstallminiconda
 :installminiconda
-IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %miniconda64% -OutFile %UserProfile%\miniconda_installer.exe" && start /B /WAIT %UserProfile%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\Desota\Portables\miniconda3 && del %UserProfile%\miniconda_installer.exe && goto skipinstallminiconda
-IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %miniconda32% -OutFile %UserProfile%\miniconda_installer.exe" && start /B /WAIT %UserProfile%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%UserProfile%\Desota\Portables\miniconda3 && del %UserProfile%\miniconda_installer.exe && && goto skipinstallminiconda
+IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %miniconda64% -OutFile %user_path%\miniconda_installer.exe" && start /B /WAIT %user_path%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%user_path%\Desota\Portables\miniconda3 && del %user_path%\miniconda_installer.exe && goto skipinstallminiconda
+IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %miniconda32% -OutFile %user_path%\miniconda_installer.exe" && start /B /WAIT %user_path%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%user_path%\Desota\Portables\miniconda3 && del %user_path%\miniconda_installer.exe && && goto skipinstallminiconda
 :skipinstallminiconda
 
 
 :: Create/Activate Conda Virtual Environment
 ECHO %info_h2%Creating MiniConda Environment...%ansi_end% 
-call %UserProfile%\Desota\Portables\miniconda3\condabin\conda create --prefix ./env python=3.11 -y >NUL 2>NUL
-call %UserProfile%\Desota\Portables\miniconda3\condabin\conda activate ./env >NUL 2>NUL
+call %user_path%\Desota\Portables\miniconda3\condabin\conda create --prefix ./env python=3.11 -y >NUL 2>NUL
+call %user_path%\Desota\Portables\miniconda3\condabin\conda activate ./env >NUL 2>NUL
 
 :: Install required Libraries
 ECHO %info_h1%Step 6/7 - Install Project Packages%ansi_end%
-call %UserProfile%\Desota\Portables\miniconda3\condabin\conda install pip -y
+call %user_path%\Desota\Portables\miniconda3\condabin\conda install pip -y
 call pip install -r requirements.txt >NUL 2>NUL
 
 :: MINICONDA ENV DEACTIVATE
-call %UserProfile%\Desota\Portables\miniconda3\condabin\conda deactivate >NUL 2>NUL
+call %user_path%\Desota\Portables\miniconda3\condabin\conda deactivate >NUL 2>NUL
 
 
 :: Install Service - NSSM  - the Non-Sucking Service Manager
