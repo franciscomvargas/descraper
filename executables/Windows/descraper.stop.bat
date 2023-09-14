@@ -4,6 +4,8 @@ set service_name=descraper_service
 :: - User Path
 :: %~dp0 = C:\users\[user]\Desota\Desota_Models\DeScraper\executables\Windows
 for %%a in ("%~dp0..\..\..\..\..") do set "root_path=%%~fa"
+for %%a in ("%~dp0..\..") do set "model_path=%%~fa"
+set model_status_path=%model_path%\descraper_status.txt
 
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
@@ -38,4 +40,15 @@ ECHO %info_h2%Stopping Service...%ansi_end%
 ECHO     service name: %service_name%
 
 call %nssm_exe% stop %service_name%
+
+:wait4stop
+%nssm_exe% status %service_name% >%model_status_path%
+set /p model_status=<%model_status_path%
+ECHO %model_status%
+IF %model_status% NEQ SERVICE_STOPPED (
+	goto :wait4stop
+) ELSE (
+	del %model_status_path%
+)
+
 exit
