@@ -27,9 +27,10 @@ set git32_portable=https://github.com/git-for-windows/git/releases/download/v2.4
 set miniconda64=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
 set miniconda32=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86.exe
 
-:: IPUT ARGS - /reinstall="overwrite model + remove service" ; /startmodel="Start Model Service"
+:: IPUT ARGS - /reinstall="overwrite model + remove service" ; /startmodel="Start Model Service" ; /fromrunner="Ignore Non Portable Sftwr Instalation (eg: python)"
 SET arg1=/reinstall
 SET arg2=/startmodel
+SET arg3=/fromrunner
 
 :: .BAT ANSI Colored CLI
 set header=
@@ -78,7 +79,12 @@ IF "%1" EQU "" GOTO noreinstallargs
 IF %1 EQU %arg1% (
     GOTO reinstall
 )
+IF "%2" EQU "" GOTO noreinstallargs
 IF %2 EQU %arg1% (
+    GOTO reinstall
+)
+IF "%3" EQU "" GOTO noreinstallargs
+IF %3 EQU %arg1% (
     GOTO reinstall
 )
 :noreinstallargs
@@ -101,6 +107,19 @@ call cd %model_path% >NUL 2>NUL
 
 
 :: Install Python if Required
+IF "%1" EQU "" GOTO checkinstallpython
+IF %1 EQU %arg3% (
+    GOTO skipinstallpython
+)
+IF "%2" EQU "" GOTO checkinstallpython
+IF %2 EQU %arg3% (
+    GOTO skipinstallpython
+)
+IF "%3" EQU "" GOTO checkinstallpython
+IF %3 EQU %arg3% (
+    GOTO skipinstallpython
+)
+:checkinstallpython
 ECHO %info_h1%Step 3/7 - Install Python if required%ansi_end%
 python --version >NUL 2>NUL
 IF errorlevel 1 (
@@ -131,7 +150,7 @@ IF NOT errorlevel 1 (
     call mkdir %user_path%\Desota\Portables
     IF EXIST %user_path%\Desota\Portables\PortableGit GOTO clonerep
     :: Install Portable Git
-    %info_h2%Downloading Portable Git...%ansi_end%
+    ECHO %info_h2%Downloading Portable Git...%ansi_end%
     IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %git64_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %user_path%\Desota\Portables\git_installer.exe -o"%user_path%\Desota\Portables\PortableGit" -y && del %user_path%\Desota\Portables\git_installer.exe && goto clonerep
     IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %git32_portable% -OutFile ~\Desota\Portables\git_installer.exe" && start /B /WAIT %user_path%\Desota\Portables\git_installer.exe -o"%user_path%\Desota\Portables\PortableGit" && del %user_path%\Desota\Portables\git_installer.exe && goto clonerep
     :clonerep
@@ -178,6 +197,10 @@ IF %1 EQU %arg2% (
 )
 IF "%2" EQU "" GOTO EOF_IN
 IF %2 EQU %arg2% (
+    GOTO startmodel
+)
+IF "%3" EQU "" GOTO EOF_IN
+IF %3 EQU %arg2% (
     GOTO startmodel
 )
 GOTO EOF_IN
