@@ -85,7 +85,7 @@ def get_request_html(model_request_dict, from_url=False):
         else:
             html_file, html_encoding = get_html_from_str(model_request_dict["input_args"]["html"])
 
-    if not html_file and 'file' in model_request_dict["input_args"] and "file_url" in model_request_dict["input_args"]["file"]:
+    if not html_file and 'file' in model_request_dict["input_args"] and "file_name" in model_request_dict["input_args"]["file"] and model_request_dict["input_args"]["file"]["file_name"].endswith(".html") and "file_url" in model_request_dict["input_args"]["file"]:
             html_file, html_encoding = get_html_from_url(model_request_dict["input_args"]["file"]["file_url"])
             
     if not html_file and 'text_prompt' in model_request_dict["input_args"]:
