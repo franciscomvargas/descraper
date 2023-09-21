@@ -55,28 +55,29 @@ print(response.json())
  - Click [here](http://127.0.0.1:8880/) to search for Descraper!
  - Fill with [payload](#documentation) parameters:
 
-![UI Payload Explanation](readme-imgs/UI_payload_explanation.png)
-
 </details>
 
 ### Documentation
+
+![UI Payload Explanation](readme-imgs/UI_payload_explanation.png)
+
 <details open>
-  <summary>Payload Explanation</summary>
+  <summary><h4>Payload Explanation</h4></summary>
 
 |Parameter|Type|Optional|Description|
 |---|---|---|---|
 |url|string|&cross;|The link of the website to webscrape|
-|html_text|bolean|&check;|Run Trafilatura - get text from webpage|
 |query|array of strings|&check;|When running NeuralQA is required to specify what data you want to retrieve|
+|html_text|bolean|&check;|Run Trafilatura - get text from webpage|
 |qa_port|integer|&check;|NeuralQA is a TCP/Ip service runing in paralel, here is possible to specify it's Port. Default is 8888|
-|expansionterms|array of strings for each query|&check;|NeuralQA have the ability to expand queries in order to improve the results. This by adding expansion terms (keywords) in the NeuralQA request. To get the expansion terms you need to make a perliminar POST request to "http://127.0.0.1:8880/api/expand" with the simple payload {query: [array of queries]}. Get a full grasp of this funtionality with the [NeuralQA Query Expansion](#documentation)|
+|expansionterms|array of strings for each query|&check;|NeuralQA have the ability to expand queries in order to improve the results. This by adding expansion terms (keywords) in the NeuralQA request. To get the expansion terms you need to make a perliminar POST request to "http://127.0.0.1:8880/api/expand" with the simple payload {query: [array of queries]}. Get a full grasp of this funtionality with the [NeuralQA Query Expansion](#neuralqa-query-expansion)|
 |excel|bolean|&check;|Generate Excel File with webpage tables|
 |csv|bolean|&check;|Generate CSV Files with webpage tables|
 |overwrite_files|bolean|&check;|DeScraper stores locally the scraped HTML pages and the Generated Tables, therefore, everytime you re-request the same URL you can overwrite the files switching ON this parameter (for example if the webpage has been updated)|
 </details>
 
 <details open>
-  <summary>NeuralQA Query Expansion</summary>
+  <summary><h4>NeuralQA Query Expansion</h4></summary>
 
  - Explanation:
    - First, a set of rules are used to determine which token in the query to expand. These rules are chosen to improve recall (surface relevant queries) without altering the semantics of the original query. Example rules include only expanding ADJECTIVES, ADVERBS and NOUNS ; other parts of speech are not expandable. Once expansion candidates are selected, they are then iteratively masked and a masked language model is used to predict tokens that best complete the sentence given the surrounding tokens.
