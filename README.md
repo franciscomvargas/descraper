@@ -1,4 +1,5 @@
-# About DeScraper
+<details open>
+    <summary><h1>About DeScraper</h1></summary>
 
 ![UI Show Off](readme-imgs/Descraper_UI_ShowOff.PNG)
 
@@ -19,7 +20,7 @@ This project purpose is:
   
 ### Make your first request:
 
-<details>
+<details open>
   <summary>By POST Request</summary>
 
 You can use any programing language to make this request, I will use Python to ilustrate how you can do it:
@@ -48,7 +49,7 @@ print(response.json())
 
 </details>
 
-<details>
+<details open>
   <summary>By User Interface</summary>
 
  - Click [here](http://127.0.0.1:8880/) to search for Descraper!
@@ -59,7 +60,7 @@ print(response.json())
 </details>
 
 ### Documentation
-<details>
+<details open>
   <summary>Payload Explanation</summary>
 
 |Parameter|Type|Optional|Description|
@@ -74,7 +75,7 @@ print(response.json())
 |overwrite_files|bolean|&check;|DeScraper stores locally the scraped HTML pages and the Generated Tables, therefore, everytime you re-request the same URL you can overwrite the files switching ON this parameter (for example if the webpage has been updated)|
 </details>
 
-<details>
+<details open>
   <summary>NeuralQA Query Expansion</summary>
 
  - Explanation:
@@ -91,10 +92,26 @@ print(response.json())
 
    ![Request With Expansion Terms](readme-imgs/Descraper_UI_PayloadW_expansionterms.PNG)
 </details>
+</details>
 
-# Instalation
-<details>
-    <summary><h2>Windows</h2></summary>
+<details open>
+    <summary><h1>Instalation</h1></summary>
+
+<details open>
+    <summary><h2>Use DeSOTA official <a href="https://github.com/DeSOTAai/DeManagerTools/">Manager Tools</a></h2></summary>
+
+[![Install DeManagerTools](https://img.shields.io/static/v1?label=Desota%20-%20Manager%20Tools&message=Install&color=blue&logo=windows)](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/DeSOTAai/DeManagerTools/blob/main/executables/Windows/demanagertools.install.bat)
+
+<!-- TODO: Convert desota host into HTTPS -->
+<!-- [![Install DeManagerTools](https://img.shields.io/static/v1?label=Desota%20-%20Manager%20Tools&message=Install&color=blue&logo=windows)](http://129.152.27.36/assistant/download.php?system=win&file=demanagertools) -->
+
+1. Uncompress File
+2. Run .BAT file
+
+</details>
+
+<details open>
+    <summary><h2>Manual Windows Instalation</h2></summary>
 
 * Go to CMD as Administrator (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
@@ -142,9 +159,12 @@ print(response.json())
     
     
 </details>
+</details>
 
-# Service Operations
-<details>
+<details open>
+    <summary><h1>Service Operations</h1></summary>
+    
+<details open>
     <summary><h2>Windows</h2></summary>
 
 * Go to CMD (command prompt):
@@ -165,10 +185,15 @@ print(response.json())
 
     ```
 </details>
+</details>
 
-# Uninstalation
-<details>
-    <summary><h2>Windows</h2></summary>
+<details open>
+    <summary><h1>Uninstalation</h1></summary>
+
+## Use DeSOTA official [Manager Tools](https://github.com/DeSOTAai/DeManagerTools/)
+
+<details open>
+    <summary><h2>Manual Windows Uninstalation</h2></summary>
 
 * Go to CMD (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
@@ -192,9 +217,11 @@ print(response.json())
       ```
       
 </details>
+</details>
 
-# Credits / Lincense
-  
+<details open>
+    <summary><h1>Credits / Lincense</h1></summary>
+    
 ## [Trafilatura](https://github.com/adbar/trafilatura/blob/master/LICENSE)
 ```sh
 @inproceedings{
