@@ -4,9 +4,8 @@
 ![UI Show Off](readme-imgs/Descraper_UI_ShowOff.PNG)
 
 ## Description
-This project purpose is:
- - Connect with the AI models [NeuralQA](https://github.com/victordibia/neuralqa/) (Large Datasets Question Answer) and [Trafilatura](https://github.com/adbar/trafilatura/) (HTML2Text);
- - Generate HTML tables in Excel and/or CSV format with pandas.read_html.
+This project purpose is to webscrape the web by feeding an webpage URL and conver the source-page (HTML) into text with [Trafilatura](https://github.com/adbar/trafilatura/) and retrieve answers from the page with [NeuralQA](https://github.com/victordibia/neuralqa/) (Large Datasets Question Answer).
+Additionally was implemented the conversion of html table into Excel and/or CSV format with [pandas.read_html](https://pandas.pydata.org/docs/reference/api/pandas.read_html.html).
 
 ## How it works
 ### First Steps:
