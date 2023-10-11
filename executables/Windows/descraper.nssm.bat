@@ -6,7 +6,7 @@ for %%a in ("%~dp0..\..\..\..\..") do set "root_path=%%~fa"
 :: - Model Path
 set model_path=%root_path%\DeSOTA\Desota_Models\DeScraper
 :: Service VARS - retrieved from https://nssm.cc/usage
-set model_name=Desota/Descraper
+set model_name=Desota/DeScraper
 set service_name=descraper_service
 set model_exe=%model_path%\executables\Windows\descraper.service.bat
 set exe_path=%model_path%\executables\Windows
