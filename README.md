@@ -4,9 +4,9 @@
 ![UI Show Off](readme-imgs/Descraper_UI_ShowOff.PNG)
 
 ## Description
-This project purpose is:
- - Connect with the AI models [NeuralQA](https://github.com/victordibia/neuralqa/) (Large Datasets Question Answer) and [Trafilatura](https://github.com/adbar/trafilatura/) (HTML2Text);
- - Generate HTML tables in Excel and/or CSV format with pandas.read_html.
+This project purpose is to webscrape the web by feeding an webpage URL and conver the source-page (HTML) into text with [Trafilatura](https://github.com/adbar/trafilatura/) and retrieve answers from the page with [NeuralQA](https://github.com/victordibia/neuralqa/) (Large Datasets Question Answer).
+
+Additionally was implemented the conversion of html tables into Excel and/or CSV format with [pandas.read_html](https://pandas.pydata.org/docs/reference/api/pandas.read_html.html).
 
 ## How it works
 ### First Steps:
@@ -101,7 +101,12 @@ print(response.json())
 
 ## Use DeSOTA official [Manager & Tools](https://github.com/DeSOTAai/DeManagerTools#instalation)
 
+[![Install DeManagerTools](https://img.shields.io/static/v1?label=Desota%20-%20Manager%20Tools&message=Install&color=blue&logo=windows)](https://github.com/DeSOTAai/DeManagerTools/releases/download/v0.0.2/dmt_installer-v0.0.2-win64.zip)
+
+<!--
+TODO
 [![Install DeManagerTools](https://img.shields.io/static/v1?label=Desota%20-%20Manager%20Tools&message=Install&color=blue&logo=windows)](https://desota.net/assistant/download.php?file=demanagertools&system=win)
+-->
 
 <details>
     <summary><h2>Manual Windows Instalation</h2></summary>
