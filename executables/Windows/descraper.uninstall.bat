@@ -16,12 +16,12 @@ set SCRIPTPATH=%~dpnx0
 for %%F in ("%SCRIPTPATH%") do set BASENAME=%%~nxF
 
 :: - Model Path
-set model_path_base=Desota\Desota_Models\%model_name%
-set model_service_base=%model_path_base%\executables\Windows
-set model_stop_base=%model_service_base%\descraper.stop.bat
+set model_path_basepath=Desota\Desota_Models\%model_name%
+set model_service_basepath=%model_path_basepath%\executables\Windows
+set model_stop_basepath=%model_service_basepath%\descraper.stop.bat
 
 :: - NSSM Path
-set nssm_path_base=Desota\Portables\nssm
+set nssm_path_basepath=Desota\Portables\nssm
 
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
@@ -80,10 +80,10 @@ exit
 set root_path=%UserProfile%
 :TEST_PASSED
 :: - Model Path
-set model_path=%root_path%\%model_path_base%
-set model_stop=%root_path%\%model_stop_base%
+set model_path=%root_path%\%model_path_basepath%
+set model_stop=%root_path%\%model_stop_basepath%
 :: - NSSM Path
-set nssm_path=%root_path%\%nssm_path_base%
+set nssm_path=%root_path%\%nssm_path_basepath%
 
 :: Copy File from future  deleted folder
 IF "%SCRIPTPATH%" NEQ "%root_path%\%BASENAME%" (

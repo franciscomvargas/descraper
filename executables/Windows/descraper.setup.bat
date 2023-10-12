@@ -1,10 +1,10 @@
 @ECHO OFF
 :: Instalation VARS
 set model_name=DeScraper
-set model_path_base=Desota\Desota_Models\%model_name%
-set model_service_base=%model_path_base%\executables\Windows
-set model_service_install_base=%model_service_base%\descraper.nssm.bat
-set model_start_base=%model_service_base%\descraper.start.bat
+set model_path_basepath=Desota\Desota_Models\%model_name%
+set model_service_basepath=%model_path_basepath%\executables\Windows
+set model_service_install_basepath=%model_service_basepath%\descraper.nssm.bat
+set model_start_basepath=%model_service_basepath%\descraper.start.bat
 set service_port=8880
 :: - Model GIT
 set model_release=https://github.com/franciscomvargas/deurlcruncher/archive/refs/tags/v0.0.0.zip
@@ -92,12 +92,12 @@ ECHO %fail%[ DEV TIP ] Run Command Without Admin Rights!%ansi_end%
 PAUSE
 exit
 :TEST1_PASSED
-.
+
 set user_path=%UserProfile%
 :TEST_PASSED
-set model_path=%user_path%\%model_path_base%
-set model_service_install=%user_path%\%model_service_install_base%
-set model_start=%user_path%\%model_start_base%
+set model_path=%user_path%\%model_path_basepath%
+set model_service_install=%user_path%\%model_service_install_basepath%
+set model_start=%user_path%\%model_start_basepath%
 
 :: Model Folder
 :: DEV TIP: call powershell -command "Invoke-WebRequest -Uri %model_release% -OutFile %user_path%\%model_name%_release.zip" &&  tar -xzvf %user_path%\%model_name%_release.zip -C %model_path% --strip-components 1 && del %user_path%\%model_name%_release.zip
