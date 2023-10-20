@@ -1,5 +1,5 @@
 from pathlib import Path
-import os
+import os, sys
 import time
 import random
 import json
@@ -11,6 +11,21 @@ import shutil   # Delete not empty folder
 from trafilatura import extract
 from trafilatura.settings import use_config
 
+
+
+CURR_PATH = os.path.dirname(os.path.realpath(__file__))
+def user_chown(path):
+    if sys.platform == "linux" or sys.platform == "linux2":
+        #CURR_PATH=/home/[USER]/Desota/Desota_Models/DeScraper/scraper
+        USER=str(CURR_PATH).split("/")[-5]
+        os.system(f"chown -R {USER} {path}")
+    return
+    
+GEN_FILES_PATH = os.path.join(CURR_PATH, "gen_files")
+if not os.path.exists(GEN_FILES_PATH):
+    os.mkdir(GEN_FILES_PATH)
+    user_chown(GEN_FILES_PATH)
+        
 # WebScrape html page by URL
 def url_scrape(url, overwrite_files=False):
     # Check if url as been allready Scraped
@@ -124,9 +139,10 @@ def gen_tabel_files(url, html_file, overwrite_files=False, csv=False, excel=Fals
     url_to_filename = clean_filename(url)
 
     # Create Directories if Required
-    dir_path = os.path.join(Path.cwd(), "gen_files", "tables")
-    if not os.path.exists(f"{dir_path}"):
-        os.makedirs(dir_path)
+    dir_path = os.path.join(GEN_FILES_PATH, "tables")
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path)
+        user_chown(dir_path)
 
     # Gen Pandas DataFrame
     try:
@@ -136,61 +152,71 @@ def gen_tabel_files(url, html_file, overwrite_files=False, csv=False, excel=Fals
             "error": str(e)
         }
     
-    # Gen Excel/CSV Files
+    # Prepare PAths and Folders
+    _response = {}
+    gen_excel = False
+    gen_csv = False
     if excel:
+        # Set Excel path
         excel_file_path = os.path.join(dir_path, f"excel_tables_{url_to_filename}.xlsx")
-    
-    if not csv: # Only Requested EXCEL
+
+        #Check if table allready exist
         if not os.path.exists(excel_file_path) or overwrite_files:
-            with pd.ExcelWriter(excel_file_path) as writer:
-                for count, table in enumerate(dataframe):
-                    table.to_excel(writer, sheet_name=f"Table{count+1}")
-        return {"excel": excel_file_path}
-    else:
+            gen_excel = True
+        else:
+            _response["excel"] = excel_file_path
+    if csv:
         # Create Directory for CSV tables
         csv_path = os.path.join(dir_path, f"csv_tables_{url_to_filename}")
         if os.path.exists(csv_path) and overwrite_files:
             shutil.rmtree(csv_path)
         if not os.path.exists(csv_path):
             os.mkdir(csv_path)
+            user_chown(csv_path)
 
-    if not excel: # Only Requested CSV
-        if len(os.listdir(csv_path)) == 0:
-            for count, table in enumerate(dataframe):
-                table.to_csv(os.path.join(csv_path, f"table{count+1}.csv"), sep=",", index=None)
-        return {"csv": csv_path}
-    
-    else:         # Requested CSV and EXCEL
-        gen_excel = False
-        gen_csv = False
-        if not os.path.exists(excel_file_path) or overwrite_files:
-            gen_excel = True
-        if os.listdir(csv_path) == 0:
+        #Check if table allready exists
+        if not os.listdir(csv_path):
             gen_csv = True
+        else:
+            _response["csv"] = csv_path
 
-        if gen_excel and gen_csv:
-            with pd.ExcelWriter(excel_file_path) as writer:
-                for count, table in enumerate(dataframe):
-                    table.to_excel(writer, sheet_name=f"Table{count+1}")
-                    table.to_csv(os.path.join(csv_path, f"table{count+1}.csv"), sep=",", index=None)
-        elif gen_excel:
-            with pd.ExcelWriter(excel_file_path) as writer:
-                for count, table in enumerate(dataframe):
-                    table.to_excel(writer, sheet_name=f"Table{count+1}")
-        elif gen_csv:
+    #GENERATE
+    if gen_excel and gen_csv:
+        with pd.ExcelWriter(excel_file_path) as writer:
             for count, table in enumerate(dataframe):
-                table.to_csv(os.path.join(csv_path, f"table{count+1}.csv"), sep=",", index=None)
+                csv_table = os.path.join(csv_path, f"table{count+1}.csv")
+                table.to_excel(writer, sheet_name=f"Table{count+1}")
+                table.to_csv(csv_table, sep=",", index=None)
 
-        return {
+                user_chown(csv_table)
+                if count == len(dataframe)-1:
+                    user_chown(excel_file_path)
+        _response = {
             "excel": excel_file_path,
             "csv": csv_path
         }
+    elif gen_excel:
+        with pd.ExcelWriter(excel_file_path) as writer:
+            for count, table in enumerate(dataframe):
+                table.to_excel(writer, sheet_name=f"Table{count+1}")
+
+            user_chown(excel_file_path)
+        _response["excel"] = excel_file_path
+    elif gen_csv:
+        for count, table in enumerate(dataframe):
+            csv_table = os.path.join(csv_path, f"table{count+1}.csv")
+            table.to_csv(csv_table, sep=",", index=None)
+            
+            user_chown(csv_table)
+        _response["csv"] = csv_path
+
+    return _response
 
 # Check Scraped URLS
 def get_html_file(url):
     # encoded_url = urllib.parse.quote(url)
     url_to_filename = clean_filename(url)
-    file_path = os.path.join(Path.cwd(), "gen_files", "html", f"{url_to_filename}.html")
+    file_path = os.path.join(CURR_PATH, "gen_files", "html", f"{url_to_filename}.html")
     if os.path.exists(file_path):
         return file_path
     else:
@@ -198,16 +224,19 @@ def get_html_file(url):
     
 # Generate HTML file
 def gen_html_file(url, html):
-    dir_path = os.path.join(Path.cwd(), "gen_files", "html")
-    if not os.path.exists(f"{dir_path}"):
-        os.makedirs(dir_path)
+    dir_path = os.path.join(GEN_FILES_PATH, "html")
+    if not os.path.exists(dir_path):
+        os.mkdir(dir_path)
+        if sys.platform == "linux" or sys.platform == "linux2":
+            user_chown(dir_path)
         
     url_to_filename = clean_filename(url)
     file_path = os.path.join(dir_path, f"{url_to_filename}.html")
     
     with open(file_path, "w", encoding="utf-8") as fw:
         fw.write(html)
-
+    if sys.platform == "linux" or sys.platform == "linux2":
+        user_chown(file_path)
     return file_path
 
 # Convert URL to Filename
