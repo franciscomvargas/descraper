@@ -114,17 +114,19 @@ print(response.json())
   
 2. **Open** [`Models Instalation`](https://github.com/DeSOTAai/DeManagerTools/#install--upgrade-desota-models-and-tools) tab
 
-3. **Select** the Available Tool `franciscomvargas\descraper`
+3. **Select** the Available Tool `franciscomvargas/descraper`
 
 4. **Press** `Start Instalation`
 
 <details>
     <summary><h2>Manual Windows Instalation</h2></summary>
 
-* Go to CMD as Administrator (command prompt):
+* Go to CMD (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
-  * Search: `cmd` 
-  * <kbd>Ctrl</kbd> + <kbd>⇧ Shift</kbd> + <kbd>↵ Enter</kbd>
+  * Enter: `cmd` 
+  * <kbd>↵ Enter</kbd>
+
+### Download:
 
 1. Create Model Folder:
 ```cmd
@@ -171,13 +173,13 @@ del %UserProfile%\DeScraper_release.zip
         <tbody>
             <tr>
                 <td>/debug</td>
-                <td>Setup with debug Echo ON</td>
+                <td>Log everything (useful for debug)</td>
                 <td><code>%UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.setup.bat /debug</code></td>
             </tr>
             <tr>
-                <td>/startmodel</td>
-                <td>Start Model at end of setup</td>
-                <td><code>%UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.setup.bat /startmodel</code></td>
+                <td>/manualstart</td>
+                <td>Don't start at end of setup</td>
+                <td><code>%UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.setup.bat /manualstart</code></td>
             </tr>
         </tbody>
     </table>
@@ -192,6 +194,7 @@ del %UserProfile%\DeScraper_release.zip
 * Go to Terminal:
     * <kbd> Ctrl </kbd> + <kbd> Alt </kbd> + <kbd>T</kbd>
 
+### Download:
 
 1. Create Model Folder:
 ```cmd
@@ -242,9 +245,9 @@ sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.setup.bas
                 <td><code>sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.setup.bash -d</code></td>
             </tr>
             <tr>
-                <td>-s</td>
-                <td>Start Model at end of setup</td>
-                <td><code>sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.setup.bash -s</code></td>
+                <td>-m</td>
+                <td>Don't start service at end of setup</td>
+                <td><code>sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.setup.bash -m</code></td>
             </tr>
         </tbody>
     </table>
@@ -265,26 +268,23 @@ sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.setup.bas
 <details>
     <summary><h2>Windows</h2></summary>
 
-* Go to CMD (command prompt):
+* Go to CMD as Administrator (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
-  * Search: `cmd` 
+  * Enter: `cmd` 
   * <kbd>Ctrl</kbd> + <kbd>⇧ Shift</kbd> + <kbd>↵ Enter</kbd>
 
 ### Start Service
-* Copy-Paste the following comands: 
     ```cmd
     %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.start.bat
 
     ```
 ### Stop Service
-* Copy-Paste the following comands: 
     ```cmd
     %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.stop.bat
 
     ```
 
 ### Status Service
-* Copy-Paste the following comands: 
     ```cmd
     %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.status.bat
 
@@ -300,29 +300,23 @@ sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.setup.bas
     * <kbd> Ctrl </kbd> + <kbd> Alt </kbd> + <kbd>T</kbd>
 
 ### Start Service
-* Copy-Paste the following comands: 
     ```cmd
     sudo systemctl start descraper.service
     ```
     
 ### Stop Service
-* Copy-Paste the following comands: 
     ```cmd
     sudo systemctl stop descraper.service
 
     ```
 
 ### Status Service
-* Copy-Paste the following comands: 
     ```cmd
     systemctl status descraper.service
 
     ```
 </details>
 </details>
-
-
-
 
 
 
@@ -334,16 +328,17 @@ sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.setup.bas
 
 1. **Open** [`Models Dashboard`](https://github.com/DeSOTAai/DeManagerTools/#models--tools-dashboard) tab
 
-2. **Select** the model `franciscomvargas\descraper`
+2. **Select** the model `franciscomvargas/descraper`
 
 3. **Press** `Uninstall`
 
 <details>
     <summary><h2>Manual Windows Uninstalation</h2></summary>
 
-* Go to CMD (command prompt):
+* Go to CMD as Administrator (command prompt):
   * <kbd>⊞ Win</kbd> + <kbd>R</kbd>
   * Enter: `cmd` 
+  * <kbd>Ctrl</kbd> + <kbd>⇧ Shift</kbd> + <kbd>↵ Enter</kbd>
 
 ```cmd
 %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.uninstall.bat
@@ -379,8 +374,6 @@ sudo bash ~/Desota/Desota_Models/DeScraper/executables/Linux/descraper.uninstall
       
 </details>
 </details>
-
-
 
 
 
