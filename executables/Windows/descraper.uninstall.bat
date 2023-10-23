@@ -132,9 +132,7 @@ set nssm_path=%user_path%\%nssm_path_basepath%
 set model_stop=%user_path%\%model_stop_basepath%
 
 
-:: Copy File from future  deleted folder
-:: - Current Path
-:: %~dp0 = C:\Users\[username]Desota\Desota_Models\DeScraper\executables\windows
+:: Copy File from future deleted folder
 for %%F in ("%req_uninstall_path%") do set BASENAME=%%~nxF
 IF %arg2_bool% EQU 0 (
     del %user_path%\%BASENAME% >NUL 2>NUL

@@ -19,7 +19,7 @@ exit /B
 
 
 
-:: -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe: miniconda + pip pckgs + NSSM
+:: -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe (LocalhostAsService - Model): miniconda + pip pckgs + NSSM
 
 :: USER PATH
 :: %~dp0 = C:\users\[user]\Desota\Desota_Models\DeScraper\executables\Windows
@@ -35,7 +35,7 @@ set model_status_path=%model_path%\descraper_status.txt
 
 
 
-:: -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe (LocalhostAsService - Model): miniconda + pip pckgs + NSSM
+:: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
 :: - .bat ANSI Colored CLI
 set header=
