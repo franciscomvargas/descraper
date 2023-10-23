@@ -90,13 +90,12 @@ IF %PROCESSOR_ARCHITECTURE%==x86 set nssm_exe=%nssm_path%\win32\nssm.exe
 call %nssm_exe% remove %service_name%  confirm >NUL 2>NUL
 :: > Service Install
 call %nssm_exe% install %service_name% %model_exe% %exe_path% 
-::>NUL 2>NUL
 :: God spot to check service not installed!
 
 :: > Application tab
 :: call %nssm_exe% set %service_name% Application %model_exe%
-call %nssm_exe% set %service_name% AppDirectory %exe_path% >NUL 2>NUL
-call %nssm_exe% set %service_name% AppParameters server >NUL 2>NUL
+call %nssm_exe% set %service_name% AppDirectory %exe_path%
+call %nssm_exe% set %service_name% AppParameters server
 
 :: Details tab
 call %nssm_exe% set %service_name% DisplayName %model_display_name%
