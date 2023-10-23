@@ -6,18 +6,22 @@ USER=${get_user%% *}
 USER_HOME="/home/$USER"
 
 
-# -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe: miniconda + pip pckgs + systemctl service
+# -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe (LocalhostAsService - Model): miniconda + pip pckgs + NSSM
 
 # SETUP VARS
 MODEL_NAME=DeScraper
+
 # - Model Release
 MODEL_RELEASE=https://github.com/franciscomvargas/deurlcruncher/archive/refs/tags/v0.0.0.zip
+
 # - Model Path
 #   $PWD = \home\[username]\Desota\Desota_Models\DeUrlCruncher\executables\Linux
 MODEL_PATH=$USER_HOME/Desota/Desota_Models/$MODEL_NAME
+
 # Conda Instalation
 MODEL_ENV=$MODEL_PATH/env
 PIP_REQS=$MODEL_PATH/requirements.txt
+
 # - Create Service Script - Files generated in create_service.py
 EXECS_PATH=$MODEL_PATH/executables/Linux
 CREATE_SERV=$EXECS_PATH/create_service.py
@@ -197,6 +201,7 @@ then
     echo "    Open Model: http://127.0.0.1:$SERV_PORT"
 fi
 
+echo
 echo
 echo 'Setup Completed!'
 exit

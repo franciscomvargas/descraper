@@ -1,18 +1,51 @@
 @ECHO OFF
-:: Instalation VARS
+
+:: GET ADMIN > BEGIN
+net session >NUL 2>NUL
+IF %errorLevel% NEQ 0 (
+	goto UACPrompt
+) ELSE (
+	goto gotAdmin
+)
+:UACPrompt
+ECHO Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+set params= %*
+ECHO UAC.ShellExecute "cmd.exe", "/c ""%~s0"" %params:"=""%", "", "runas", 1 >> "%temp%\getadmin.vbs"
+cscript "%temp%\getadmin.vbs"
+del "%temp%\getadmin.vbs"
+exit /B
+:gotAdmin
+:: GET ADMIN > END
+
+
+
+:: -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe (LocalhostAsService - Model): miniconda + pip pckgs + NSSM
+
+:: USER PATH
+:: %~dp0 = C:\Users\[username]Desota\Desota_Models\DeScraper\executables\windows
+for %%a in ("%~dp0\..\..\..\..\..") do set "user_path=%%~fa"
+for %%a in ("%~dp0\..\..\..\..\..\..") do set "test_path=%%~fa"
+for %%a in ("%UserProfile%\..") do set "test1_path=%%~fa"
+
+:: Model VARS
 set model_name=DeScraper
 set model_path_basepath=Desota\Desota_Models\%model_name%
+
+:: - Model GIT
+set model_release=https://github.com/franciscomvargas/deurlcruncher/archive/refs/tags/v0.0.0.zip
+
+:: - Miniconda (virtual environment) Vars
+set conda_basepath=Desota\Portables\miniconda3\condabin\conda.bat
+set model_env_basepath=%model_path_basepath%\env
+set pip_reqs_basepath=%model_path_basepath%\requirements.txt
+
+:: - Service as NSSM VARS
 set model_service_basepath=%model_path_basepath%\executables\Windows
 set model_service_install_basepath=%model_service_basepath%\descraper.nssm.bat
 set model_start_basepath=%model_service_basepath%\descraper.start.bat
 set service_port=8880
-:: - Model GIT
-set model_release=https://github.com/franciscomvargas/deurlcruncher/archive/refs/tags/v0.0.0.zip
-:: - Model Path
-:: %~dp0 = C:\Users\[username]Desota\Desota_Models\DeUrlCruncher\executables\windows
-for %%a in ("%~dp0\..\..\..\..\..") do set "user_path=%%~fa"
-for %%a in ("%~dp0\..\..\..\..\..\..") do set "test_path=%%~fa"
-for %%a in ("%UserProfile%\..") do set "test1_path=%%~fa"
+
+
 
 
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
@@ -21,8 +54,8 @@ for %%a in ("%UserProfile%\..") do set "test1_path=%%~fa"
 set miniconda64=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
 set miniconda32=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86.exe
 
-:: IPUT ARGS - /startmodel="Start Model Service"
-SET arg1=/startmodel
+:: IPUT ARGS - /manualstart="Start Model Service Manually: %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.start.bat
+SET arg1=/manualstart
 SET arg2=/debug
 :: Start Runner Service?
 IF "%1" EQU "" GOTO noarg1
@@ -78,7 +111,8 @@ set ansi_end=%ESC%[0m
 
 ECHO %header%Welcome to %model_name% Setup!%ansi_end%
 
-:: TEST PATH
+:: GET USER PATH
+
 IF "%test_path%" EQU "C:\Users" GOTO TEST_PASSED
 IF "%test_path%" EQU "C:\users" GOTO TEST_PASSED
 IF "%test_path%" EQU "c:\Users" GOTO TEST_PASSED
@@ -92,10 +126,15 @@ ECHO %fail%[ DEV TIP ] Run Command Without Admin Rights!%ansi_end%
 PAUSE
 exit
 :TEST1_PASSED
-
 set user_path=%UserProfile%
 :TEST_PASSED
+:: Model VARS
 set model_path=%user_path%\%model_path_basepath%
+:: Miniconda (virtual environment) Vars
+set conda_path=%user_path%\%conda_basepath%
+set model_env=%user_path%\%model_env_basepath%
+set pip_reqs=%user_path%\%pip_reqs_basepath%
+:: - Service as NSSM VARS
 set model_service_install=%user_path%\%model_service_install_basepath%
 set model_start=%user_path%\%model_start_basepath%
 
@@ -104,7 +143,7 @@ set model_start=%user_path%\%model_start_basepath%
 IF NOT EXIST %model_path% (
     ECHO %fail%Error: Model not installed correctly %ansi_end%
     ECHO %fail1%[ CMD TIP ] Download Release with this command:%ansi_end%
-    ECHO     IF EXIST %UserProfile%\Desota\Desota_Models\DeUrlCruncher ^( rmdir /S /Q %UserProfile%\Desota\Desota_Models\DeUrlCruncher ^) ELSE ^( ECHO New Install! ^) ^&^& mkdir %UserProfile%\Desota\Desota_Models\DeUrlCruncher ^&^& powershell -command "Invoke-WebRequest -Uri %model_release% -OutFile %user_path%\%model_name%_release.zip" ^&^&  tar -xzvf %user_path%\%model_name%_release.zip -C %model_path% --strip-components 1 ^&^& del %user_path%\%model_name%_release.zip
+    ECHO     IF EXIST %model_path% ^( rmdir /S /Q %model_path% ^) ELSE ^( ECHO New Install! ^) ^&^& mkdir %model_path% ^&^& powershell -command "Invoke-WebRequest -Uri %model_release% -OutFile %user_path%\%model_name%_release.zip" ^&^&  tar -xzvf %user_path%\%model_name%_release.zip -C %model_path% --strip-components 1 ^&^& del %user_path%\%model_name%_release.zip
     ECHO  %ESC%P
     PAUSE
     exit
@@ -117,7 +156,6 @@ call cd %model_path% >NUL 2>NUL
 :: Install Conda Required
 ECHO %info_h1%Step 2/4 - Install Miniconda for Project%ansi_end%
 call mkdir %user_path%\Desota\Portables >NUL 2>NUL
-set conda_path=%user_path%\Desota\Portables\miniconda3\condabin\conda.bat
 IF NOT EXIST %conda_path% goto installminiconda
 goto skipinstallminiconda
 :installminiconda
@@ -125,17 +163,18 @@ IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %
 IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %miniconda32% -OutFile %user_path%\miniconda_installer.exe" && start /B /WAIT %user_path%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%model_path%Desota\Portables\miniconda3 && del %user_path%\\miniconda_installer.exe && && goto skipinstallminiconda
 :skipinstallminiconda
 
+
 :: Create/Activate Conda Virtual Environment
 ECHO %info_h2%Creating MiniConda Environment...%ansi_end% 
 IF %arg2_bool% EQU 1 (
-    call %conda_path% create --prefix ./env python=3.11 -y
+    call %conda_path% create --prefix %model_env% python=3.11 -y
 ) ELSE (
-    call %conda_path% create --prefix ./env python=3.11 -y >NUL 2>NUL
+    call %conda_path% create --prefix %model_env% python=3.11 -y >NUL 2>NUL
 )
 IF %arg2_bool% EQU 1 (
-    call %conda_path% activate ./env
+    call %conda_path% activate %model_env%
 ) ELSE (
-    call %conda_path% activate ./env >NUL 2>NUL
+    call %conda_path% activate %model_env% >NUL 2>NUL
 )
 IF %arg2_bool% EQU 1 (
     call %conda_path% install pip -y
@@ -143,14 +182,12 @@ IF %arg2_bool% EQU 1 (
     call %conda_path% install pip -y > NUL 2>NUL
 )
 
-
-
 :: Install required Libraries
 ECHO %info_h1%Step 3/4 - Install Project Packages%ansi_end%
 IF %arg2_bool% EQU 1 (
-    call pip install -r requirements.txt
+    call pip install -r %pip_reqs%
 ) ELSE (
-    call pip install -r requirements.txt >NUL 2>NUL
+    call pip install -r %pip_reqs% >NUL 2>NUL
     call pip freeze
 )
 
@@ -160,12 +197,16 @@ call %conda_path% deactivate >NUL 2>NUL
 
 
 :: Install Service - NSSM  - the Non-Sucking Service Manager
-ECHO %info_h1%Step 4/47 - Create Project Service with NSSM%ansi_end%
-start /B /WAIT %model_service_install%
+ECHO %info_h1%Step 4/4 - Create Project Service with NSSM%ansi_end%
+ECHO %info_h2%Installing Service...%ansi_end% 
+ECHO     Service Install Path: %model_service_install%
+start /WAIT %model_service_install%
 
 :: Start Runner Service?
-IF %arg1_bool% EQU 0 GOTO NOSTART
-start /B /WAIT %model_start%
+IF %arg1_bool% EQU 1 GOTO NOSTART
+ECHO %info_h2%Starting Service...%ansi_end% 
+ECHO     Service Start Path: %model_start%
+start /WAIT %model_start%
 call explorer "http://127.0.0.1:%service_port%"
 ECHO %sucess%Instalation Completed!%ansi_end%
 ECHO %info_h2%model name  : %model_name%%ansi_end%

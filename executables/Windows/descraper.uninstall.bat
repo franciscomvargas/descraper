@@ -1,41 +1,85 @@
 @ECHO OFF
-:: Uninstalation VARS
-set service_name=descraper_service
-set model_name=DeScraper
-set uninstaller_header=%model_name% Uninstaller - Sad to say goodbye ):
 
-:: - User Path
+:: GET ADMIN > BEGIN
+net session >NUL 2>NUL
+IF %errorLevel% NEQ 0 (
+	goto UACPrompt
+) ELSE (
+	goto gotAdmin
+)
+:UACPrompt
+ECHO Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+set params= %*
+ECHO UAC.ShellExecute "cmd.exe", "/c ""%~s0"" %params:"=""%", "", "runas", 1 >> "%temp%\getadmin.vbs"
+cscript "%temp%\getadmin.vbs"
+del "%temp%\getadmin.vbs"
+exit /B
+:gotAdmin
+:: GET ADMIN > END
+
+
+
+:: -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe (LocalhostAsService - Model): miniconda + pip pckgs + NSSM
+
+:: USER PATH
 :: %~dp0 = C:\users\[user]\Desota\Desota_Models\DeScraper\executables\Windows
+for %%a in ("%~dp0\..\..\..\..\..") do set "user_path=%%~fa"
+for %%a in ("%~dp0\..\..\..") do set "model_path=%%~fa"
 for %%a in ("%~dp0\..\..\..\..\..\..") do set "test_path=%%~fa"
 for %%a in ("%UserProfile%\..") do set "test1_path=%%~fa"
-for %%a in ("%~dp0..\..\..\..\..") do set "root_path=%%~fa"
 
-:: - Current Path
-:: %~dp0 = C:\Users\[username]Desota\Desota_Models\DeUrlCruncher\executables\windows
-set SCRIPTPATH=%~dpnx0
-for %%F in ("%SCRIPTPATH%") do set BASENAME=%%~nxF
-
-:: - Model Path
+:: Model VARS
+set model_name=DeScraper
 set model_path_basepath=Desota\Desota_Models\%model_name%
-set model_service_basepath=%model_path_basepath%\executables\Windows
-set model_stop_basepath=%model_service_basepath%\descraper.stop.bat
+set uninstaller_header=%model_name% Uninstaller - Sad to say goodbye ):
+set model_execs_basepath=%model_path_basepath%\executables\Windows
+set req_uninstall_path=%model_execs_basepath%\descraper.uninstall.bat
 
-:: - NSSM Path
+
+:: - Miniconda (virtual environment) Vars
+set conda_basepath=Desota\Portables\miniconda3\condabin\conda.bat
+set model_env_basepath=%model_path_basepath%\env
+
+:: - NSSM VARS
+set service_name=descraper_service
+set model_stop_basepath=%model_execs_basepath%\descraper.stop.bat
 set nssm_path_basepath=Desota\Portables\nssm
+
+
+
 
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
 :: IPUT ARGS - /Q=Quietly
 SET arg1=/Q
+SET arg2=/TMP
 :: Start Runner Service?
 IF "%1" EQU "" GOTO noarg1
 IF %1 EQU %arg1% (
     SET arg1_bool=1
     GOTO yeasarg1
 )
+IF "%2" EQU "" GOTO noarg1
+IF %2 EQU %arg1% (
+    SET arg1_bool=1
+    GOTO yeasarg1
+)
 :noarg1
 SET arg1_bool=0
 :yeasarg1
+IF "%1" EQU "" GOTO noarg2
+IF %1 EQU %arg2% (
+    SET arg2_bool=1
+    GOTO yeasarg2
+)
+IF "%2" EQU "" GOTO noarg2
+IF %2 EQU %arg2% (
+    SET arg2_bool=1
+    GOTO yeasarg2
+)
+:noarg2
+SET arg2_bool=0
+:yeasarg2
 
 :: - .bat ANSI Colored CLI
 set header=
@@ -62,8 +106,6 @@ set ansi_end=%ESC%[0m
 ECHO %header%%uninstaller_header%%ansi_end%
 ECHO    model name  : %model_name%
 ECHO    service name: %service_name%
-
-:: TEST PATH
 IF "%test_path%" EQU "C:\Users" GOTO TEST_PASSED
 IF "%test_path%" EQU "C:\users" GOTO TEST_PASSED
 IF "%test_path%" EQU "c:\Users" GOTO TEST_PASSED
@@ -77,56 +119,77 @@ ECHO %fail%DEV TIP: Run Command Without Admin Rights!%ansi_end%
 PAUSE
 exit
 :TEST1_PASSED
-set root_path=%UserProfile%
+set user_path=%UserProfile%
 :TEST_PASSED
-:: - Model Path
-set model_path=%root_path%\%model_path_basepath%
-set model_stop=%root_path%\%model_stop_basepath%
+:: Model VARS
+set model_path=%user_path%\%model_path_basepath%
+set req_uninstall_path=%user_path%\%req_uninstall_path%
+:: - Miniconda (virtual environment) Vars
+set conda_path=%user_path%\%conda_basepath%
+set model_env=%user_path%\%model_env_basepath%
 :: - NSSM Path
-set nssm_path=%root_path%\%nssm_path_basepath%
+set nssm_path=%user_path%\%nssm_path_basepath%
+set model_stop=%user_path%\%model_stop_basepath%
+
 
 :: Copy File from future  deleted folder
-IF "%SCRIPTPATH%" NEQ "%root_path%\%BASENAME%" (
-    del %root_path%\%BASENAME% >NUL 2>NUL
-    copy %SCRIPTPATH% %root_path%\%BASENAME%
+:: - Current Path
+:: %~dp0 = C:\Users\[username]Desota\Desota_Models\DeScraper\executables\windows
+for %%F in ("%req_uninstall_path%") do set BASENAME=%%~nxF
+IF %arg2_bool% EQU 0 (
+    del %user_path%\%BASENAME% >NUL 2>NUL
+    copy %req_uninstall_path% %user_path%\%BASENAME%
     IF %arg1_bool% EQU 1 (
-        start %root_path%\%BASENAME% /Q
+        start %user_path%\%BASENAME% /Q /TMP
     ) ELSE (
-        start %root_path%\%BASENAME%
+        start %user_path%\%BASENAME% /TMP
     )
     exit
 )
+
 
 :: NSSM - exe VAR 
 IF %PROCESSOR_ARCHITECTURE%==AMD64 set nssm_exe=%nssm_path%\win64\nssm.exe
 IF %PROCESSOR_ARCHITECTURE%==x86 set nssm_exe=%nssm_path%\win32\nssm.exe
 
-IF "%1" EQU "" GOTO noargs
-IF %1 EQU /Q (
-    :: Delete Model Service - retrieved from https://nssm.cc/commands
-    ECHO %info_h1%Stoping DeSOTA Services%ansi_end%
-    start /B /WAIT %model_stop%
-    call %nssm_exe% remove %service_name% confirm >NUL 2>NUL
-    :: Delete Project Folder
-	ECHO %info_h1%Deleting Project Folder%ansi_end%
-    IF EXIST %model_path% rmdir /S /Q %model_path% >NUL 2>NUL
-    GOTO EOF_UN
-)
 
-:noargs
+
+IF %arg1_bool% EQU 0 GOTO noisy_uninstall
+
+:: QUIET UNISTALL
+
+:: Delete Model Service - retrieved from https://nssm.cc/commands
+ECHO %info_h1%Stoping DeSOTA Services%ansi_end%
+start /B /WAIT %model_stop%
+call %nssm_exe% remove %service_name% confirm >NUL 2>NUL
+:: Delete pip pckgs
+ECHO %info_h1%Deleting pip packages%ansi_end%
+ECHO The packages from the following environment will be REMOVED:
+ECHO     Package Plan: %model_env%
+call %conda_path% remove --prefix %model_env% --all --force -y>NUL 2>NUL
+:: Delete Project Folder
+ECHO %info_h1%Deleting Project Folder%ansi_end%
+IF EXIST %model_path% rmdir /S /Q %model_path% >NUL 2>NUL
+GOTO EOF_UN
+
+
+:: USER UNINSTALL
+:noisy_uninstall
+
 :: Delete Model Service - retrieved from https://nssm.cc/commands
 ECHO %info_h1%Stoping DeSOTA Services%ansi_end%
 start /B /WAIT %model_stop%
 call %nssm_exe% remove %service_name%
+:: Delete pip pckgs
+ECHO %info_h1%Deleting pip packages%ansi_end%
+call %conda_path% remove --prefix %model_env% --all --force 
 :: Delete Project Folder
-IF EXIST %model_path% (
-	ECHO %info_h1%Deleting Project Folder%ansi_end%
-    rmdir /S %model_path%
-    GOTO EOF_UN
-)
+ECHO %info_h1%Deleting Project Folder%ansi_end%
+IF EXIST %model_path% rmdir /S %model_path%
 
-:EOF_UN
+
 :: Inform Uninstall Completed
+:EOF_UN
 IF EXIST %model_path% (
     ECHO %fail%%model_name% Uninstall Fail%ansi_end%
     PAUSE
@@ -135,6 +198,6 @@ IF EXIST %model_path% (
     timeout 1 >NUL 2>NUL
 )
 IF %arg1_bool% EQU 1 (
-    del %root_path%\%BASENAME% >NUL 2>NUL && exit
+    del %user_path%\%BASENAME% >NUL 2>NUL && exit
 )
-del %root_path%\%BASENAME% >NUL 2>NUL && PAUSE && exit
+del %user_path%\%BASENAME% >NUL 2>NUL && PAUSE && exit

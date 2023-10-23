@@ -1,13 +1,41 @@
 @ECHO OFF
+
+:: GET ADMIN > BEGIN
+net session >NUL 2>NUL
+IF %errorLevel% NEQ 0 (
+	goto UACPrompt
+) ELSE (
+	goto gotAdmin
+)
+:UACPrompt
+ECHO Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+set params= %*
+ECHO UAC.ShellExecute "cmd.exe", "/c ""%~s0"" %params:"=""%", "", "runas", 1 >> "%temp%\getadmin.vbs"
+cscript "%temp%\getadmin.vbs"
+del "%temp%\getadmin.vbs"
+exit /B
+:gotAdmin
+:: GET ADMIN > END
+
+
+
+:: -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe: miniconda + pip pckgs + NSSM
+
+:: USER PATH
+:: %~dp0 = C:\users\[user]\Desota\Desota_Models\DeScraper\executables\Windows
+for %%a in ("%~dp0..\..\..\..\..") do set "user_path=%%~fa"
+for %%a in ("%~dp0..\..") do set "model_path=%%~fa"
+
 :: Service VARS
 set service_name=descraper_service
-:: - User Path
-:: %~dp0 = C:\users\[user]\Desota\Desota_Models\DeScraper\executables\Windows
-for %%a in ("%~dp0..\..\..\..\..") do set "root_path=%%~fa"
-for %%a in ("%~dp0..\..") do set "model_path=%%~fa"
+
+:: NSSM VARS
+set nssm_path=%user_path%\Desota\Portables\nssm
 set model_status_path=%model_path%\descraper_status.txt
 
-:: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
+
+
+:: -- Edit bellow vvvv DeSOTA DEVELOPER EXAMPLe (LocalhostAsService - Model): miniconda + pip pckgs + NSSM
 
 :: - .bat ANSI Colored CLI
 set header=
@@ -32,8 +60,8 @@ set ansi_end=%ESC%[0m
 :end_ansi_colors
 
 :: NSSM - exe path 
-IF %PROCESSOR_ARCHITECTURE%==AMD64 set nssm_exe=%root_path%\Desota\Portables\nssm\win64\nssm.exe
-IF %PROCESSOR_ARCHITECTURE%==x86 set nssm_exe=%root_path%\Desota\Portables\nssm\win32\nssm.exe
+IF %PROCESSOR_ARCHITECTURE%==AMD64 set nssm_exe=%nssm_path%\win64\nssm.exe
+IF %PROCESSOR_ARCHITECTURE%==x86 set nssm_exe=%nssm_path%\win32\nssm.exe
 
 :: Stop service - retrieved from https://nssm.cc/commands
 ECHO %info_h2%Stopping Service...%ansi_end% 
