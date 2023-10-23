@@ -37,8 +37,8 @@ SERV_PATH=$EXECS_PATH/$SERV_NAME
 [ "$UID" -eq 0 ] || { 
     echo "This script must be run as root to create a systemctl service!"; 
     echo "Usage:"; 
-    echo "sudo $0 [-s] [-d] [-h]";
-    echo "    -s = Start Service";
+    echo "sudo $0 [-m] [-d] [-h]";
+    echo "    -m = Start Service Manually";
     echo "    -d = Echo everything (debug)";
     echo "    -h = Help";
     echo "    [] = Optional";
@@ -58,17 +58,17 @@ case $architecture in
         ?) miniconda_dwnld=https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh;;
 esac
 # IPUT ARGS - -s="Start Model Service"; -d="Print stuff and Pause at end"
-startmodel=0
+manualstart=0
 debug=0
-while getopts sdhe: flag
+while getopts mdhe: flag
 do
     case $flag in
-        s) startmodel=1;;
+        m) manualstart=1;;
         d) debug=1;;
         h) { 
             echo "Usage:"; 
-            echo "sudo $0 [-s] [-d] [-h]";
-            echo "    -s = Start Service";
+            echo "sudo $0 [-m] [-d] [-h]";
+            echo "    -m = Start Service Manually";
             echo "    -d = Echo everything (debug)";
             echo "    -h = Help";
             echo "    [] = Optional";
@@ -76,8 +76,8 @@ do
         };;
         ?) {
             echo "Usage:"; 
-            echo "sudo $0 [-s] [-d] [-h]";
-            echo "    -s = Start Service";
+            echo "sudo $0 [-m] [-d] [-h]";
+            echo "    -m = Start Service Manually";
             echo "    -d = Echo everything (debug)";
             echo "    -h = Help";
             echo "    [] = Optional";
@@ -86,7 +86,7 @@ do
     esac
 done
 echo "Input Arguments:"
-echo "    startmodel [-s]: $startmodel"
+echo "    manualstart [-m]: $manualstart"
 echo "    debug [-d]: $debug"
 
 # Move to Project Folder
@@ -194,7 +194,7 @@ cp $SERV_PATH /lib/systemd/system
 systemctl daemon-reload
 
 # Start Model ?
-if [ "$startmodel" -eq "1" ]; 
+if [ "$manualstart" -eq "0" ]; 
 then
     echo "Starting Service..."
     systemctl start $SERV_NAME

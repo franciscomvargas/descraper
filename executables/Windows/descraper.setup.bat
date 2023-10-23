@@ -54,8 +54,10 @@ set service_port=8880
 set miniconda64=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
 set miniconda32=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86.exe
 
-:: IPUT ARGS - /manualstart="Start Model Service Manually: %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.start.bat
+:: IPUT ARGS
+:: /manualstart :: Start Model Service Manually: %UserProfile%\Desota\Desota_Models\DeScraper\executables\Windows\descraper.start.bat
 SET arg1=/manualstart
+:: /debug :: Log everything and require USER interaction
 SET arg2=/debug
 :: Start Runner Service?
 IF "%1" EQU "" GOTO noarg1
@@ -166,28 +168,30 @@ IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %mi
 
 :: Create/Activate Conda Virtual Environment
 ECHO %info_h2%Creating MiniConda Environment...%ansi_end% 
-IF %arg2_bool% EQU 1 (
-    call %conda_path% create --prefix %model_env% python=3.11 -y
-) ELSE (
-    call %conda_path% create --prefix %model_env% python=3.11 -y >NUL 2>NUL
-)
-IF %arg2_bool% EQU 1 (
-    call %conda_path% activate %model_env%
-) ELSE (
-    call %conda_path% activate %model_env% >NUL 2>NUL
-)
-IF %arg2_bool% EQU 1 (
-    call %conda_path% install pip -y
-) ELSE (
-    call %conda_path% install pip -y > NUL 2>NUL
-)
+IF %arg2_bool% EQU 1 GOTO noisy_conda
+
+:: QUIET SETUP
+
+call %conda_path% create --prefix %model_env% python=3.11 -y >NUL 2>NUL
+call %conda_path% activate %model_env% >NUL 2>NUL
+call %conda_path% install pip -y > NUL 2>NUL
+GOTO eo_conda
+
+:: USER SETUP
+:noisy_conda
+call %conda_path% create --prefix %model_env% python=3.11 -y
+call %conda_path% activate %model_env%
+call %conda_path% install pip -y
+
+:eo_conda
+
 
 :: Install required Libraries
 ECHO %info_h1%Step 3/4 - Install Project Packages%ansi_end%
 IF %arg2_bool% EQU 1 (
-    call pip install -r %pip_reqs%
+    call pip install -r %pip_reqs% --compile --no-cache-dir
 ) ELSE (
-    call pip install -r %pip_reqs% >NUL 2>NUL
+    call pip install -r %pip_reqs% --compile --no-cache-dir >NUL 2>NUL
     call pip freeze
 )
 
