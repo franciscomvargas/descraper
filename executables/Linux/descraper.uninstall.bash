@@ -71,7 +71,7 @@ then
     echo "    quiet [-q]: $quiet"
 else
     if ( test -e "$USER_HOME/$BASENAME" ); then
-        rm $USER_HOME/$BASENAME
+        rm -rf $USER_HOME/$BASENAME
     fi
     cp $SCRIPTPATH $USER_HOME/$BASENAME
     #chown -R $USER $USER_HOME/$BASENAME
