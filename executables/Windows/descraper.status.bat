@@ -28,3 +28,4 @@ IF "%1" EQU "" GOTO noargs
 exit
 :noargs
 %nssm_exe% status %service_name%
+PAUSE

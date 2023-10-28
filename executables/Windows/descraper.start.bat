@@ -39,9 +39,6 @@ set nssm_path=%user_path%\Desota\Portables\nssm
 
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
-:: /automatic :: Request from DeSOTA. 
-set automatic=/automatic
-
 :: - .bat ANSI Colored CLI
 set header=
 set info=
