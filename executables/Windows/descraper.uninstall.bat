@@ -50,10 +50,19 @@ set nssm_path_basepath=Desota\Portables\nssm
 
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
-:: IPUT ARGS - /Q=Quietly
+:: >>IPUT ARGS<<
+:: /Q :: Quiet Uninstall (Minimal Logs)
 SET arg1=/Q
+:: /TMP :: Running script in TMP file in order to delete project root folder
 SET arg2=/TMP
-:: Start Runner Service?
+:: /automatic :: Request from DeSOTA. 
+:: - Script Call Require USER_PATH after /automatic ( Script will not work if not )
+::      `[uninstaller].bat /automatic C:\Users\[Desota]`
+:: - Script Require not to not be inside the Proiject Folder
+:: - Required to delete file externaly ( NOT AUTOMATIC )
+set automatic=/automatic
+
+:: Parse arguments into variables
 IF "%1" EQU "" GOTO noarg1
 IF %1 EQU %arg1% (
     SET arg1_bool=1
@@ -64,9 +73,15 @@ IF %2 EQU %arg1% (
     SET arg1_bool=1
     GOTO yeasarg1
 )
+IF "%3" EQU "" GOTO noarg1
+IF %3 EQU %arg1% (
+    SET arg1_bool=1
+    GOTO yeasarg1
+)
 :noarg1
 SET arg1_bool=0
 :yeasarg1
+
 IF "%1" EQU "" GOTO noarg2
 IF %1 EQU %arg2% (
     SET arg2_bool=1
@@ -77,9 +92,40 @@ IF %2 EQU %arg2% (
     SET arg2_bool=1
     GOTO yeasarg2
 )
+IF "%3" EQU "" GOTO noarg2
+IF %3 EQU %arg2% (
+    SET arg2_bool=1
+    GOTO yeasarg2
+)
 :noarg2
 SET arg2_bool=0
 :yeasarg2
+
+IF "%1" EQU "" GOTO noarg3
+IF %1 EQU %automatic% (
+    SET automatic_bool=1
+    set user_path=%2
+    set test2_path=%2
+    GOTO yeasarg3
+)
+IF "%2" EQU "" GOTO noarg3
+IF %2 EQU %automatic% (
+    SET automatic_bool=1
+    set user_path=%3
+    set test2_path=%3
+    GOTO yeasarg3
+)
+IF "%3" EQU "" GOTO noarg3
+IF %3 EQU %automatic% (
+    SET automatic_bool=1
+    set user_path=%4
+    set test2_path=%4
+    GOTO yeasarg3
+)
+:noarg3
+SET automatic_bool=0
+:yeasarg3
+
 
 :: - .bat ANSI Colored CLI
 set header=
@@ -106,14 +152,22 @@ set ansi_end=%ESC%[0m
 ECHO %header%%uninstaller_header%%ansi_end%
 ECHO    model name  : %model_name%
 ECHO    service name: %service_name%
+
+:: GET USER PATH
+IF %automatic_bool% EQU 1 (
+    IF EXIST %test2_path% GOTO TEST_PASSED
+)
+
 IF "%test_path%" EQU "C:\Users" GOTO TEST_PASSED
 IF "%test_path%" EQU "C:\users" GOTO TEST_PASSED
 IF "%test_path%" EQU "c:\Users" GOTO TEST_PASSED
 IF "%test_path%" EQU "c:\users" GOTO TEST_PASSED
+
 IF "%test1_path%" EQU "C:\Users" GOTO TEST1_PASSED
 IF "%test1_path%" EQU "C:\users" GOTO TEST1_PASSED
 IF "%test1_path%" EQU "c:\Users" GOTO TEST1_PASSED
 IF "%test1_path%" EQU "c:\users" GOTO TEST1_PASSED
+
 ECHO %fail%Error: Can't Resolve Request!%ansi_end%
 ECHO %fail%DEV TIP: Run Command Without Admin Rights!%ansi_end%
 PAUSE
@@ -133,6 +187,7 @@ set model_stop=%user_path%\%model_stop_basepath%
 
 
 :: Copy File from future deleted folder
+IF %automatic_bool% EQU 1 GOTO allinone
 for %%F in ("%req_uninstall_path%") do set BASENAME=%%~nxF
 IF %arg2_bool% EQU 0 (
     del %user_path%\%BASENAME% >NUL 2>NUL
@@ -144,6 +199,7 @@ IF %arg2_bool% EQU 0 (
     )
     exit
 )
+:allinone
 
 
 :: NSSM - exe VAR 
@@ -165,8 +221,13 @@ ECHO %info_h1%Deleting pip packages%ansi_end%
 ECHO The packages from the following environment will be REMOVED:
 ECHO     Package Plan: %model_env%
 call %conda_path% remove --prefix %model_env% --all --force -y>NUL 2>NUL
+call %conda_path% clean --yes --all --force 2>NUL
 :: Delete Project Folder
 ECHO %info_h1%Deleting Project Folder%ansi_end%
+IF %automatic_bool% EQU 0 GOTO notautomatic
+IF NOT EXIST %model_path% exit
+(goto) 2>nul & rmdir /S /Q %model_path% & exit
+:notautomatic
 IF EXIST %model_path% rmdir /S /Q %model_path% >NUL 2>NUL
 GOTO EOF_UN
 
@@ -181,6 +242,7 @@ call %nssm_exe% remove %service_name%
 :: Delete pip pckgs
 ECHO %info_h1%Deleting pip packages%ansi_end%
 call %conda_path% remove --prefix %model_env% --all --force 
+call %conda_path% clean --yes --all --force 2>NUL
 :: Delete Project Folder
 ECHO %info_h1%Deleting Project Folder%ansi_end%
 IF EXIST %model_path% rmdir /S %model_path%

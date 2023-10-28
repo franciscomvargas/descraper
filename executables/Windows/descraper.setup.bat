@@ -59,7 +59,8 @@ set miniconda32=https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x8
 SET arg1=/manualstart
 :: /debug :: Log everything and require USER interaction
 SET arg2=/debug
-:: Start Runner Service?
+
+:: Parse arguments into variables
 IF "%1" EQU "" GOTO noarg1
 IF %1 EQU %arg1% (
     SET arg1_bool=1
@@ -73,7 +74,7 @@ IF %2 EQU %arg1% (
 :noarg1
 SET arg1_bool=0
 :yeasarg1
-:: DEBUG
+
 IF "%1" EQU "" GOTO noarg2
 IF %1 EQU %arg2% (
     SET arg2_bool=1
@@ -87,6 +88,7 @@ IF %2 EQU %arg2% (
 :noarg2
 SET arg2_bool=0
 :yeasarg2
+
 
 :: .BAT ANSI Colored CLI
 set header=
@@ -113,16 +115,18 @@ set ansi_end=%ESC%[0m
 
 ECHO %header%Welcome to %model_name% Setup!%ansi_end%
 
+
 :: GET USER PATH
+IF "%test1_path%" EQU "C:\Users" GOTO TEST1_PASSED
+IF "%test1_path%" EQU "C:\users" GOTO TEST1_PASSED
+IF "%test1_path%" EQU "c:\Users" GOTO TEST1_PASSED
+IF "%test1_path%" EQU "c:\users" GOTO TEST1_PASSED
 
 IF "%test_path%" EQU "C:\Users" GOTO TEST_PASSED
 IF "%test_path%" EQU "C:\users" GOTO TEST_PASSED
 IF "%test_path%" EQU "c:\Users" GOTO TEST_PASSED
 IF "%test_path%" EQU "c:\users" GOTO TEST_PASSED
-IF "%test1_path%" EQU "C:\Users" GOTO TEST1_PASSED
-IF "%test1_path%" EQU "C:\users" GOTO TEST1_PASSED
-IF "%test1_path%" EQU "c:\Users" GOTO TEST1_PASSED
-IF "%test1_path%" EQU "c:\users" GOTO TEST1_PASSED
+
 ECHO %fail%Error: Can't Resolve Request!%ansi_end%
 ECHO %fail%[ DEV TIP ] Run Command Without Admin Rights!%ansi_end%
 PAUSE
@@ -152,10 +156,12 @@ IF NOT EXIST %model_path% (
 )
 
 :: Move to Project Folder
+ECHO.
 ECHO %info_h1%Step 1/4 - Move (cd) to Project Path%ansi_end%
 call cd %model_path% >NUL 2>NUL
 
 :: Install Conda Required
+ECHO.
 ECHO %info_h1%Step 2/4 - Install Miniconda for Project%ansi_end%
 call mkdir %user_path%\Desota\Portables >NUL 2>NUL
 IF NOT EXIST %conda_path% goto installminiconda
@@ -164,7 +170,6 @@ goto skipinstallminiconda
 IF %PROCESSOR_ARCHITECTURE%==AMD64 powershell -command "Invoke-WebRequest -Uri %miniconda64% -OutFile %user_path%\miniconda_installer.exe" && start /B /WAIT %user_path%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%user_path%\Desota\Portables\miniconda3 && del %user_path%\\miniconda_installer.exe && goto skipinstallminiconda
 IF %PROCESSOR_ARCHITECTURE%==x86 powershell -command "Invoke-WebRequest -Uri %miniconda32% -OutFile %user_path%\miniconda_installer.exe" && start /B /WAIT %user_path%\miniconda_installer.exe /InstallationType=JustMe /AddToPath=0 /RegisterPython=0 /S /D=%model_path%Desota\Portables\miniconda3 && del %user_path%\\miniconda_installer.exe && && goto skipinstallminiconda
 :skipinstallminiconda
-
 
 :: Create/Activate Conda Virtual Environment
 ECHO %info_h2%Creating MiniConda Environment...%ansi_end% 
@@ -187,11 +192,17 @@ call %conda_path% install pip -y
 
 
 :: Install required Libraries
+ECHO.
 ECHO %info_h1%Step 3/4 - Install Project Packages%ansi_end%
 IF %arg2_bool% EQU 1 (
     call pip install -r %pip_reqs% --compile --no-cache-dir
 ) ELSE (
+    ECHO %info_h2%The following packages will be installed:%ansi_end%
+    call type %pip_reqs%
+    ECHO.
+    ECHO %info_h2%Instalation in progress...%ansi_end%
     call pip install -r %pip_reqs% --compile --no-cache-dir >NUL 2>NUL
+    ECHO %info_h2%Instalation Completed:%ansi_end%
     call pip freeze
 )
 
@@ -201,6 +212,7 @@ call %conda_path% deactivate >NUL 2>NUL
 
 
 :: Install Service - NSSM  - the Non-Sucking Service Manager
+ECHO.
 ECHO %info_h1%Step 4/4 - Create Project Service with NSSM%ansi_end%
 ECHO %info_h2%Installing Service...%ansi_end% 
 ECHO     Service Install Path: %model_service_install%
