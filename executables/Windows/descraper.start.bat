@@ -15,7 +15,7 @@ cscript "%temp%\getadmin.vbs"
 del "%temp%\getadmin.vbs"
 exit /B
 :gotAdmin
-:: GET ADMIN > END
+:: GET ADMIN < END
 
 
 
@@ -103,6 +103,6 @@ IF '%service_res%' NEQ '%shake_respose%' (
 <nul set /p =%ansi_end%
 
 :enofassetstart
-echo:
+ECHO.
 call %nssm_exe% status %service_name%
 exit

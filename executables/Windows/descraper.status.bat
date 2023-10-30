@@ -14,7 +14,6 @@ set nssm_path=%user_path%\Desota\Portables\nssm
 
 
 
-
 :: -- Edit bellow if you're felling lucky ;) -- https://youtu.be/5NV6Rdv1a3I
 
 :: NSSM - exe path 
@@ -23,9 +22,8 @@ IF %PROCESSOR_ARCHITECTURE%==x86 set nssm_exe=%nssm_path%\win32\nssm.exe
 
 :: Status service - retrieved from https://nssm.cc/commands
 :: Bat Requires as argument the Target where status will be written
-IF "%1" EQU "" GOTO noargs
-%nssm_exe% status %service_name% >%1
+%nssm_exe% status %service_name%
+IF "%1" NEQ "/nopause" GOTO noargs
 exit
 :noargs
-%nssm_exe% status %service_name%
 PAUSE
