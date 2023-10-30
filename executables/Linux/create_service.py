@@ -7,8 +7,6 @@ parser.add_argument("-uh", "--user_home",
 args = parser.parse_args()
 
 
-
-
 USER_PATH=None
 if args.user_home:
     if os.path.isdir(args.user_home):
