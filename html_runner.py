@@ -126,11 +126,12 @@ def main(args):
     # TARGET File Path
     dir_path = os.path.dirname(os.path.realpath(__file__))
     out_filepath = os.path.join(dir_path, f"html-to-text_{start_time}.txt")
-    if len(get_url_from_str(send_task_url))>1:
-        dev_mode = False
-    else:
+    out_urls = get_url_from_str(send_task_url)
+    if len(out_urls)==0:
         dev_mode = True
-        report_path = send_task_url
+    else:
+        dev_mode = False
+        report_path = out_urls[0]
 
     # Get html file
     html_file, html_encoding = get_request_html(model_request_dict)

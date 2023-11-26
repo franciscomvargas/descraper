@@ -125,11 +125,12 @@ def main(args):
     # TARGET File Path
     dir_path = os.path.dirname(os.path.realpath(__file__))
     out_filepath = os.path.join(dir_path, f"url-to-text{start_time}.txt")
-    if len(get_url_from_str(send_task_url))>1:
-        dev_mode = False
-    else:
+    out_urls = get_url_from_str(send_task_url)
+    if len(out_urls)==0:
         dev_mode = True
-        report_path = send_task_url
+    else:
+        dev_mode = False
+        report_path = out_urls[0]
 
     # Get url from request
     _req_urls = get_request_url(model_request_dict)
