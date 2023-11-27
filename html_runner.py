@@ -121,17 +121,18 @@ def main(args):
     model_request_dict = get_model_req(args.model_req)
 
     # API Response URL
-    send_task_url = args.model_res_url
+    result_id = args.model_res_url
     
     # TARGET File Path
     dir_path = os.path.dirname(os.path.realpath(__file__))
     out_filepath = os.path.join(dir_path, f"html-to-text_{start_time}.txt")
-    out_urls = get_url_from_str(send_task_url)
+    out_urls = get_url_from_str(result_id)
     if len(out_urls)==0:
         dev_mode = True
+        report_path = result_id
     else:
         dev_mode = False
-        report_path = out_urls[0]
+        send_task_url = out_urls[0]
 
     # Get html file
     html_file, html_encoding = get_request_html(model_request_dict)
