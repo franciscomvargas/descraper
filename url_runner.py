@@ -100,6 +100,23 @@ def get_url_from_str(string):
     return [x[0] for x in url]
 # DeSOTA Funcs [END]
 
+def descraper_request(descraper_url, payload, headers) -> dict|None:
+    descraper_response = requests.request("POST", descraper_url, json=payload, headers=headers)
+    if descraper_response.status_code != 200:
+        print(f"[ ERROR ] -> Descraper Request Failed (Info):\n\tResponse Code = {descraper_response.status_code}")
+        return None
+
+    descraper_res = descraper_response.json()
+    if 'error' in descraper_res or not descraper_res:
+        print(f"[ ERROR ] -> Descraper Response Error (Info):{json.dumps(descraper_res, indent=2)}")
+        return None
+    
+    try:
+        assert descraper_res["html_text"] 
+        return descraper_res["html_text"]
+    except:
+        return None
+    
 def main(args):
     '''
     return codes:
@@ -139,7 +156,7 @@ def main(args):
     # Input Error - ret 1
     descraper_res = None
     if _req_urls:
-        for _req_url in _req_urls:
+        for reqc, _req_url in enumerate(_req_urls):
             # Descraper Request Preparation
             payload = {
                 "url": _req_url,
@@ -156,59 +173,43 @@ def main(args):
             print(f"[ INFO ] -> Descraper Request Payload:\n{json.dumps(payload, indent=2)}")
             descraper_url = "http://127.0.0.1:8880/api/url"
 
-            descraper_response = requests.request("POST", descraper_url, json=payload, headers=headers)
-    
-            if descraper_response.status_code != 200:
-                continue
-
-            descraper_json_res = descraper_response.json()
-            if 'error' in descraper_json_res:
-                continue
-
-            if "html_text" in descraper_json_res and descraper_json_res["html_text"]:
-                descraper_res = descraper_json_res["html_text"] 
+            descraper_res = descraper_request(descraper_url, payload, headers)
+            if descraper_res:
                 break
+            elif reqc == len(_req_urls)-1:
+                exit(2)
 
     else:
-        html_file, html_encoding = get_request_html(model_request_dict, from_url=True)
-        if not html_file:
+        req_html = get_request_html(model_request_dict, from_url=True)
+        if not req_html:
             print(f"[ ERROR ] -> Descraper Request Failed: No HTML | ULR found")
             exit(1)
+        for reqc, (html_file, html_encoding) in enumerate(req_html):
+            # Descraper Request Preparation
+            payload = {
+                "html": html_file,
+                "html_encoding": html_encoding,
+                "html_text": True,
+                "overwrite_files": False
+            }
+            headers = {
+                "Accept": "application/json, text/javascript, */*; q=0.01",
+                "Connection": "keep-alive",
+                "Content-Type": "application/json; charset=UTF-8"
+            }
+            # Descraper Request
+            print(f"[ INFO ] -> Descraper Request Payload:\n{json.dumps(payload, indent=2)}")
+            descraper_url = "http://127.0.0.1:8880/api/html"
 
-        # Descraper Request Preparation
-        payload = {
-            "html": html_file,
-            "html_encoding": html_encoding,
-            "html_text": True,
-            "overwrite_files": False
-        }
-        headers = {
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "Connection": "keep-alive",
-            "Content-Type": "application/json; charset=UTF-8"
-        }
-        # Descraper Request
-        print(f"[ INFO ] -> Descraper Request Payload:\n{json.dumps(payload, indent=2)}")
-        descraper_url = "http://127.0.0.1:8880/api/html"
-
-        descraper_response = requests.request("POST", descraper_url, json=payload, headers=headers)
-
-        if descraper_response.status_code != 200:
-            print(f"[ ERROR ] -> Descraper Request Code: {descraper_response.status_code}")
-            exit(1)
-        
-        descraper_json_res = descraper_response.json()
-        if 'error' in descraper_json_res:
-            print(f"[ ERROR ] -> Descraper Output ERROR: {json.dumps(descraper_json_res, indent=2)}")
-            exit(2)
-
-        if "html_text" in descraper_json_res and descraper_json_res["html_text"]:
-            descraper_res = descraper_json_res["html_text"]
+            descraper_res = descraper_request(descraper_url, payload, headers)
+            if descraper_res:
+                break
+            elif reqc == len(_req_urls)-1:
+                exit(2)
     
     if not descraper_res:
         print(f"[ ERROR ] -> Descraper Output ERROR: No results can be parsed for this request")
         exit(2)
-
 
     print(f"[ INFO ] -> Descraper Response:{json.dumps(descraper_res, indent=2)}")
 
