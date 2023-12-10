@@ -16,18 +16,10 @@ parser.add_argument("-mru", "--model_res_url",
 DEBUG = False
 
 # DeSOTA Funcs [START]
-#   > Get User OS
-# inspired inhttps://stackoverflow.com/a/13874620
-def get_platform():
-    _platform = sys.platform
-    _win_res=["win32", "cygwin", "msys"]
-    _lin_res=["linux", "linux2"]
-    _user_sys = "win" if _platform in _win_res else "lin" if _platform in _lin_res else None
-    if not _user_sys:
-        raise EnvironmentError(f"Plataform `{_platform}` can not be parsed to DeSOTA Options: Windows={_win_res}; Linux={_lin_res}")
-    return _user_sys
+#   > Import DeSOTA Scripts
+from desota import detools
 #   > Grab DeSOTA Paths
-USER_SYS=get_platform()
+USER_SYS = detools.get_platform()
 APP_PATH = os.path.dirname(os.path.realpath(__file__))
 #   > USER_PATH
 if USER_SYS == "win":
@@ -40,64 +32,7 @@ elif USER_SYS == "lin":
     desota_idx = [ps.lower() for ps in path_split].index("desota")
     USER=path_split[desota_idx-1]
     USER_PATH = "/".join(path_split[:desota_idx])
-def user_chown(path):
-    '''Remove root previleges for files and folders: Required for Linux'''
-    if USER_SYS == "lin":
-        #CURR_PATH=/home/[USER]/Desota/DeRunner
-        os.system(f"chown -R {USER} {path}")
-    return
 DESOTA_ROOT_PATH = os.path.join(USER_PATH, "Desota")
-
-#   > Import DeSOTA Scripts
-RUNNER_UTILS_DIR = os.path.join(APP_PATH, "runner_utils")
-RUNNER_UTILS_PY = os.path.join(RUNNER_UTILS_DIR, "utils.py")
-DERUNNER_UTILS_PATH = os.path.join(DESOTA_ROOT_PATH, "DeRunner", "Tools", "decode_desota_model_request.py")
-RUNNER_UTILS_URL = "https://raw.githubusercontent.com/DeSOTAai/DeRunner/main/Tools/decode_desota_model_request.py"
-_utils_init = os.path.join(RUNNER_UTILS_DIR, "__init__.py")
-_desota_files = [RUNNER_UTILS_PY, _utils_init]
-_desota_isfiles = [os.path.isfile(p) for p in _desota_files]
-if False in _desota_isfiles:
-    if not os.path.isdir(RUNNER_UTILS_DIR):
-        os.mkdir(RUNNER_UTILS_DIR)
-    if not os.path.isfile(_utils_init):
-        open(_utils_init, 'w').close()
-    if not os.path.isfile(RUNNER_UTILS_PY) and os.path.isfile(DERUNNER_UTILS_PATH):
-        shutil.copyfile(DERUNNER_UTILS_PATH, RUNNER_UTILS_PY)
-    if not os.path.isfile(RUNNER_UTILS_PY):
-        runner_utils_req = requests.get(RUNNER_UTILS_URL)
-        if runner_utils_req.status_code != 200:
-            raise EnvironmentError(f"Unable to create Desota Runner Utils\n  from: {RUNNER_UTILS_URL}\n    to: {RUNNER_UTILS_PY}")
-        with open(RUNNER_UTILS_PY, "w") as ru:
-            ru.write(runner_utils_req.text)
-    user_chown(RUNNER_UTILS_DIR)
-from runner_utils.utils import *
-
-#   > Parse DeSOTA Request
-def get_model_req(req_path):
-    '''
-    {
-        "task_type": None,      # TASK VARS
-        "task_model": None,
-        "task_dep": None,
-        "task_args": None,
-        "task_id": None,
-        "filename": None,       # FILE VARS
-        "file_url": None,
-        "text_prompt": None     # TXT VAR
-    }
-    '''
-    if not os.path.isfile(req_path):
-        exit(1)
-    with open(req_path) as f:
-        return yaml.load(f, Loader=SafeLoader)
-#   > FIND URL WITH REGEX
-def get_url_from_str(string):
-    # retrieved from https://www.geeksforgeeks.org/python-check-url-string/
-    # findall() has been used
-    # with valid conditions for urls in string
-    regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
-    url = re.findall(regex, string)
-    return [x[0] for x in url]
 # DeSOTA Funcs [END]
 
 def descraper_request(descraper_url, payload, headers) -> dict|None:
@@ -129,7 +64,7 @@ def main(args):
     #---INPUT---#
 
     # DeSOTA Model Request
-    model_request_dict = get_model_req(args.model_req)
+    model_request_dict = detools.get_model_req(args.model_req)
 
     # API Response URL
     result_id = args.model_res_url
@@ -137,7 +72,7 @@ def main(args):
     # TARGET File Path
     dir_path = os.path.dirname(os.path.realpath(__file__))
     out_filepath = os.path.join(dir_path, f"html-to-text_{start_time}.txt")
-    out_urls = get_url_from_str(result_id)
+    out_urls = detools.get_url_from_str(result_id)
     if len(out_urls)==0:
         dev_mode = True
         report_path = result_id
@@ -146,7 +81,7 @@ def main(args):
         send_task_url = out_urls[0]
 
     # Get html file
-    req_html = get_request_html(model_request_dict)
+    req_html = detools.get_request_html(model_request_dict)
     
     if req_html:
         for reqc, (html_file, html_encoding) in enumerate(req_html):
@@ -175,7 +110,7 @@ def main(args):
             elif reqc == len(req_html)-1:
                 exit(2)
     else:
-        _req_url = get_request_url(model_request_dict)
+        _req_url = detools.get_request_url(model_request_dict)
 
         if not _req_url:
             print(f"[ ERROR ] -> Descraper Request Failed: No HTML ! ULR found")
@@ -225,8 +160,8 @@ def main(args):
                 rw,
                 indent=2
             )
-        user_chown(report_path)
-        user_chown(out_filepath)
+        detools.user_chown(report_path)
+        detools.user_chown(out_filepath)
         print(f"Path to report:\n\t{report_path}")
     else:
         files = []

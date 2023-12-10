@@ -5,6 +5,4 @@ httpx
 pandas[excel]
 html5lib
 beautifulsoup4
-# DeSOTA Packgs
-pyyaml
-requests
+desota
