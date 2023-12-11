@@ -156,13 +156,11 @@ IF NOT EXIST %model_path% (
 )
 
 :: Move to Project Folder
-ECHO.
-ECHO %info_h1%Step 1/4 - Move (cd) to Project Path%ansi_end%
 call cd %model_path% >NUL 2>NUL
 
 :: Install Conda Required
 ECHO.
-ECHO %info_h1%Step 2/4 - Install Miniconda for Project%ansi_end%
+ECHO %info_h1%Step 1/3 - Install Miniconda for Project%ansi_end%
 call mkdir %user_path%\Desota\Portables >NUL 2>NUL
 IF NOT EXIST %conda_path% goto installminiconda
 goto skipinstallminiconda
@@ -193,15 +191,15 @@ call %conda_path% install pip -y
 
 :: Install required Libraries
 ECHO.
-ECHO %info_h1%Step 3/4 - Install Project Packages%ansi_end%
+ECHO %info_h1%Step 2/3 - Install Project Packages%ansi_end%
 IF %arg2_bool% EQU 1 (
-    call pip install -r %pip_reqs% --compile --no-cache-dir
+    call pip install -r %pip_reqs% --no-cache-dir
 ) ELSE (
     ECHO %info_h2%The following packages will be installed:%ansi_end%
     call type %pip_reqs%
     ECHO.
     ECHO %info_h2%Instalation in progress...%ansi_end%
-    call pip install -r %pip_reqs% --compile --no-cache-dir >NUL 2>NUL
+    call pip install -r %pip_reqs% --no-cache-dir >NUL 2>NUL
     ECHO %info_h2%Instalation Completed:%ansi_end%
     call pip freeze
 )
@@ -213,7 +211,7 @@ call %conda_path% deactivate >NUL 2>NUL
 
 :: Install Service - NSSM  - the Non-Sucking Service Manager
 ECHO.
-ECHO %info_h1%Step 4/4 - Create Project Service with NSSM%ansi_end%
+ECHO %info_h1%Step 3/3 - Create Project Service with NSSM%ansi_end%
 ECHO %info_h2%Installing Service...%ansi_end% 
 ECHO     Service Install Path: %model_service_install%
 start /WAIT %model_service_install%
