@@ -10,7 +10,7 @@ parser.add_argument("-mr", "--model_req",
                     help="DeSOTA Request as yaml file path",
                     type=str)
 parser.add_argument("-mru", "--model_res_url",
-                    help="DeSOTA API Result URL. Recognize path instead of url for desota tests", # check how is atribuited the dev_mode variable in main function
+                    help="DeSOTA API Result URL. Recognize path instead of url for desota tests", # check how is atribuited the test_mode variable in main function
                     type=str)
 
 DEBUG = False
@@ -74,10 +74,10 @@ def main(args):
     out_filepath = os.path.join(dir_path, f"html-to-text_{start_time}.txt")
     out_urls = detools.get_url_from_str(result_id)
     if len(out_urls)==0:
-        dev_mode = True
+        test_mode = True
         report_path = result_id
     else:
-        dev_mode = False
+        test_mode = False
         send_task_url = out_urls[0]
 
     # Get html file
@@ -148,7 +148,7 @@ def main(args):
     with open(out_filepath, 'w', encoding="utf-8") as fw:
         fw.write(descraper_res["html_text"] if "html_text" in descraper_res else json.dumps(descraper_res))
     
-    if dev_mode:
+    if test_mode:
         if not report_path.endswith(".json"):
             report_path += ".json"
         with open(report_path, "w") as rw:
@@ -169,7 +169,7 @@ def main(args):
             files.append(('upload[]', fr))
             # DeSOTA API Response Post
             send_task = requests.post(url = send_task_url, files=files)
-            print(f"[ INFO ] -> DeSOTA API Upload:\n{json.dumps(send_task.json(), indent=2)}")
+            print(f"[ INFO ] -> DeSOTA API Upload Res:\n{json.dumps(send_task.json(), indent=2)}")
         # Delete temporary file
         os.remove(out_filepath)
 

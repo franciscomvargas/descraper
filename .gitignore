@@ -6,6 +6,11 @@ config.yaml
 .vscode
 neuralqa/server/test_query.py
 
+# Generated USER Files @franciscomvargas
+gen_files
+html-to-text*.txt
+url-to-text*.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -135,6 +140,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# Files Generated
-gen_files
