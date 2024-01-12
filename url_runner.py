@@ -87,7 +87,7 @@ def main(args):
 
     # Get url from request
     _req_urls = detools.get_request_url(model_request_dict)
-    cprint(f"[ DEBUG ] DeScraper URLS: {_req_urls}", DEBUG)
+    print(f"[ DEBUG ] DeScraper URLS:", _req_urls)
     # Input Error - ret 1
     descraper_res = None
     if _req_urls:
