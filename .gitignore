@@ -8,7 +8,8 @@ neuralqa/server/test_query.py
 
 # Generated USER Files @franciscomvargas
 ## Service
-descraper.service*
+descraper.service
+descraper.service.bash
 ## Download Content Buffer
 gen_files
 ## Uncompleted Task = Undeleted Files ~ DEBUG ( Beta Release )
