@@ -1,4 +1,5 @@
 fastapi
+typing-extensions
 uvicorn
 trafilatura
 httpx
