@@ -193,13 +193,13 @@ call %conda_path% install pip -y
 ECHO.
 ECHO %info_h1%Step 2/3 - Install Project Packages%ansi_end%
 IF %arg2_bool% EQU 1 (
-    call pip install -r %pip_reqs% --no-cache-dir
+    call pip install -r %pip_reqs% --compile --no-cache-dir --force-reinstall --user --no-warn-script-location
 ) ELSE (
     ECHO %info_h2%The following packages will be installed:%ansi_end%
     call type %pip_reqs%
     ECHO.
     ECHO %info_h2%Instalation in progress...%ansi_end%
-    call pip install -r %pip_reqs% --no-cache-dir >NUL 2>NUL
+    call pip install -r %pip_reqs% --compile --no-cache-dir --force-reinstall --user --no-warn-script-location >NUL 2>NUL
     ECHO %info_h2%Instalation Completed:%ansi_end%
     call pip freeze
 )
